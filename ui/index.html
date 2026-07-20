@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Polymorphic Decision Protocol (PDP) Interactive Playground</title>
+  <title>Polymorphic Decision Protocol (PDP) Domain Workspace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #080c14;
-      --panel-bg: rgba(13, 20, 35, 0.7);
+      --bg-color: #060913;
+      --panel-bg: rgba(11, 17, 32, 0.75);
       --border-color: rgba(255, 255, 255, 0.08);
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
@@ -34,8 +34,8 @@
       overflow-x: hidden;
       min-height: 100vh;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.12) 0px, transparent 50%);
     }
 
     header {
@@ -48,7 +48,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(8, 12, 20, 0.8);
+      background: rgba(6, 9, 19, 0.8);
     }
 
     header h1 {
@@ -60,19 +60,27 @@
       letter-spacing: -0.5px;
     }
 
-    .status-badge {
-      background: rgba(6, 182, 212, 0.1);
-      border: 1px solid rgba(6, 182, 212, 0.2);
+    .preset-selector-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .preset-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
       color: var(--accent-cyan);
-      padding: 0.4rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      min-width: 250px;
     }
 
     main {
-      max-width: 1500px;
+      max-width: 1550px;
       margin: 0 auto;
       padding: 2rem;
       display: grid;
@@ -107,7 +115,7 @@
     }
 
     .card-title {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 1.25rem;
       display: flex;
@@ -117,10 +125,6 @@
     }
 
     /* Form controls */
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
     .form-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -269,43 +273,21 @@
     .log-hash {
       color: var(--primary);
     }
-
-    /* Sliders */
-    .slider-container {
-      margin-bottom: 1rem;
-    }
-
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.3rem;
-      font-size: 0.85rem;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      outline: none;
-      -webkit-appearance: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--primary);
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Polymorphic Decision Protocol Playground</h1>
-    <div class="status-badge">Interactive Mode</div>
+    <h1>Polymorphic Decision Protocol Workspace</h1>
+    <div class="preset-selector-container">
+      <label style="margin: 0; font-size: 0.75rem;">Preset Domain:</label>
+      <select id="domain-preset" class="preset-select" onchange="loadPreset()">
+        <option value="hiring">Tech Hiring (Alice vs Bob)</option>
+        <option value="investment">Venture Investment (SaaS vs Hardware)</option>
+        <option value="sports">Prediction Market (Spain vs France)</option>
+        <option value="governance">AI Model Safety Release (Approve vs Hold)</option>
+      </select>
+    </div>
   </header>
 
   <main>
@@ -316,7 +298,7 @@
       <!-- 1. Elicitation Panel Inputs -->
       <div class="card">
         <div class="card-title">
-          <span>1. Consensus Panel (Agents)</span>
+          <span>1. Consensus Panel (Agent Verdicts)</span>
           <button class="btn btn-secondary" onclick="addAgentRow()">+ Add Agent</button>
         </div>
         <div style="overflow-x: auto;">
@@ -340,7 +322,7 @@
       <!-- 2. Model Scoring & Weights Inputs -->
       <div class="card">
         <div class="card-title">
-          <span>2. Evaluation Dimensions & Scores</span>
+          <span>2. Evaluation Dimensions & Weights</span>
           <div>
             <button class="btn btn-secondary" style="margin-right: 0.5rem;" onclick="addDimensionRow()">+ Add Dimension</button>
             <button class="btn btn-secondary btn-danger" onclick="clearDimensions()">Clear</button>
@@ -349,12 +331,12 @@
         
         <div class="form-row" style="grid-template-columns: 2fr 1fr; margin-bottom: 1.5rem;">
           <div>
-            <label>Option A Name</label>
-            <input type="text" id="option-a-name" value="Spain" oninput="updateAll()">
+            <label>Option A (Primary Candidate/Choice)</label>
+            <input type="text" id="option-a-name" value="Candidate Alice" oninput="updateAll()">
           </div>
           <div>
-            <label>Option B Name</label>
-            <input type="text" id="option-b-name" value="France" oninput="updateAll()">
+            <label>Option B (Hedge/Alternative)</label>
+            <input type="text" id="option-b-name" value="Candidate Bob" oninput="updateAll()">
           </div>
         </div>
 
@@ -364,8 +346,8 @@
               <tr>
                 <th>Dimension</th>
                 <th>Weight</th>
-                <th id="th-score-a">Spain Score</th>
-                <th id="th-score-b">France Score</th>
+                <th id="th-score-a">Alice Score</th>
+                <th id="th-score-b">Bob Score</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -378,29 +360,29 @@
 
       <!-- 3. Commitment & Sizing Inputs -->
       <div class="card">
-        <div class="card-title">3. Kelly Sizing Parameters</div>
+        <div class="card-title">3. Sizing Metrics & Ruin Caps</div>
         <div class="form-row">
           <div>
-            <label>Prob (p)</label>
-            <input type="number" id="param-p" value="0.20" step="0.01" min="0" max="1" oninput="updateAll()">
+            <label>Stated Probability (p)</label>
+            <input type="number" id="param-p" value="0.65" step="0.01" min="0" max="1" oninput="updateAll()">
           </div>
           <div>
-            <label>Net Odds (b)</label>
-            <input type="number" id="param-b" value="4.90" step="0.1" oninput="updateAll()">
+            <label>Odds Ratio / blended b</label>
+            <input type="number" id="param-b" value="1.50" step="0.1" oninput="updateAll()">
           </div>
           <div>
             <label>Kelly Fraction (k)</label>
-            <input type="number" id="param-k" value="0.25" step="0.05" oninput="updateAll()">
+            <input type="number" id="param-k" value="0.50" step="0.05" oninput="updateAll()">
           </div>
         </div>
         <div class="form-row">
           <div>
-            <label>Bankroll ($)</label>
-            <input type="number" id="param-bankroll" value="1000" oninput="updateAll()">
+            <label>Available Capital / Bankroll ($)</label>
+            <input type="number" id="param-bankroll" value="50000" oninput="updateAll()">
           </div>
           <div>
-            <label>Ruin Cap ($)</label>
-            <input type="number" id="param-ruin" value="5.00" step="0.5" oninput="updateAll()">
+            <label>Ruin Cap Limit ($)</label>
+            <input type="number" id="param-ruin" value="5000.00" step="100" oninput="updateAll()">
           </div>
         </div>
       </div>
@@ -408,7 +390,7 @@
       <!-- 4. Ladder Allocation Inputs -->
       <div class="card">
         <div class="card-title">
-          <span>4. Ladder Legs</span>
+          <span>4. Allocation Ladder Structure</span>
           <button class="btn btn-secondary" onclick="addLegRow()">+ Add Leg</button>
         </div>
         <div style="overflow-x: auto;">
@@ -439,7 +421,7 @@
         
         <div class="metric-grid">
           <div class="metric-card">
-            <div class="metric-label">ACS Consensus</div>
+            <div class="metric-label">ACS Score</div>
             <div class="metric-value" id="out-acs">0.00</div>
           </div>
           <div class="metric-card">
@@ -458,20 +440,20 @@
             <div class="metric-value" id="out-dim" style="font-size: 1.1rem; color: #fff; margin-top: 0.4rem;">None</div>
           </div>
           <div class="metric-card" style="background: var(--primary-glow); border-color: rgba(139, 92, 246, 0.2);">
-            <div class="metric-label">Kelly Sized Allocation</div>
+            <div class="metric-label">Committed Sizing</div>
             <div class="metric-value" id="out-sizing" style="color: var(--accent-pink); font-size: 1.6rem;">$0.00</div>
           </div>
         </div>
 
         <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); padding: 0.8rem; border-radius: 8px; font-size: 0.9rem; display: flex; justify-content: space-around;">
-          <div><span id="label-score-a">Spain</span> Score: <span id="out-score-a" style="color: var(--accent-cyan); font-weight: bold;">0.00</span></div>
-          <div><span id="label-score-b">France</span> Score: <span id="out-score-b" style="color: var(--accent-pink); font-weight: bold;">0.00</span></div>
+          <div><span id="label-score-a">Alice</span> Score: <span id="out-score-a" style="color: var(--accent-cyan); font-weight: bold;">0.00</span></div>
+          <div><span id="label-score-b">Bob</span> Score: <span id="out-score-b" style="color: var(--accent-pink); font-weight: bold;">0.00</span></div>
         </div>
       </div>
 
       <!-- 2. Allocated Ladder Legs Output -->
       <div class="card">
-        <div class="card-title">Committed Ladder Allocation</div>
+        <div class="card-title">Committed Ladder Distribution</div>
         <div style="overflow-x: auto;">
           <table>
             <thead>
@@ -521,25 +503,110 @@
     window.clearDimensions = clearDimensions;
     window.removeRow = removeRow;
     window.updateAll = updateAll;
+    window.loadPreset = loadPreset;
 
-    // Load defaults (Spain/France WC case)
-    const defaultAgents = [
-      { id: 'claude-3-5', vendor: 'Anthropic', evidence: 'Quant', pick: 'Spain' },
-      { id: 'gpt-4o', vendor: 'OpenAI', evidence: 'Quant', pick: 'Spain' },
-      { id: 'gemini-1-5', vendor: 'Google', evidence: 'Quant', pick: 'Spain' }
-    ];
-
-    const defaultDimensions = [
-      { name: 'Attack Peak', weight: 0.15, scoreA: 8.0, scoreB: 10.0 },
-      { name: 'Defense', weight: 0.20, scoreA: 10.0, scoreB: 7.0 },
-      { name: 'WC Pedigree', weight: 0.10, scoreA: 5.0, scoreB: 8.0 }
-    ];
-
-    const defaultLegs = [
-      { name: 'Winner Contract', type: 'Terminal', proportion: 0.50 },
-      { name: 'Semis Contract', type: 'Checkpoint', proportion: 0.40 },
-      { name: 'Group Stage Contract', type: 'SingleEvent', proportion: 0.10 }
-    ];
+    // Presets definitions for different domains
+    const presets = {
+      hiring: {
+        optionA: "Candidate Alice",
+        optionB: "Candidate Bob",
+        p: 0.65,
+        b: 1.50,
+        k: 0.50,
+        bankroll: 50000,
+        ruin: 5000,
+        agents: [
+          { id: "recruiter-bot", vendor: "Google", evidence: "Contrarian", pick: "Candidate Alice" },
+          { id: "tech-lead-bot", vendor: "Anthropic", evidence: "Quant", pick: "Candidate Alice" },
+          { id: "manager-bot", vendor: "OpenAI", evidence: "Structural", pick: "Candidate Alice" }
+        ],
+        dimensions: [
+          { name: "Technical Depth", weight: 0.30, scoreA: 9.0, scoreB: 8.0 },
+          { name: "System Design", weight: 0.30, scoreA: 8.0, scoreB: 9.5 },
+          { name: "Communication", weight: 0.20, scoreA: 9.5, scoreB: 7.0 },
+          { name: "Leadership/Scale", weight: 0.20, scoreA: 7.0, scoreB: 8.5 }
+        ],
+        legs: [
+          { name: "Base Compensation", type: "Terminal", proportion: 0.50 },
+          { name: "Performance Bonus pool", type: "Checkpoint", proportion: 0.40 },
+          { name: "Relocation allowance", type: "SingleEvent", proportion: 0.10 }
+        ]
+      },
+      investment: {
+        optionA: "SaaS Platform",
+        optionB: "Hardware Tech",
+        p: 0.70,
+        b: 3.00,
+        k: 0.25,
+        bankroll: 200000,
+        ruin: 20000,
+        agents: [
+          { id: "market-analyst-1", vendor: "OpenAI", evidence: "Market", pick: "SaaS Platform" },
+          { id: "tech-auditor-1", vendor: "Anthropic", evidence: "Structural", pick: "SaaS Platform" },
+          { id: "vc-partner-1", vendor: "Google", evidence: "Contrarian", pick: "SaaS Platform" }
+        ],
+        dimensions: [
+          { name: "Market Size (TAM)", weight: 0.25, scoreA: 8.5, scoreB: 10.0 },
+          { name: "Capital Efficiency", weight: 0.30, scoreA: 9.5, scoreB: 5.0 },
+          { name: "Founder Fit", weight: 0.25, scoreA: 8.0, scoreB: 9.0 },
+          { name: "Regulatory Risk", weight: 0.20, scoreA: 9.0, scoreB: 6.0 }
+        ],
+        legs: [
+          { name: "First Tranche (Close)", type: "Terminal", proportion: 0.50 },
+          { name: "Milestone Tranche (Q3)", type: "Checkpoint", proportion: 0.40 },
+          { name: "Legal/DD Expenses", type: "SingleEvent", proportion: 0.10 }
+        ]
+      },
+      sports: {
+        optionA: "Spain",
+        optionB: "France",
+        p: 0.20,
+        b: 4.90,
+        k: 0.25,
+        bankroll: 1000,
+        ruin: 5,
+        agents: [
+          { id: "claude-3-5", vendor: "Anthropic", evidence: "Quant", pick: "Spain" },
+          { id: "gpt-4o", vendor: "OpenAI", evidence: "Quant", pick: "Spain" },
+          { id: "gemini-1-5", vendor: "Google", evidence: "Quant", pick: "Spain" }
+        ],
+        dimensions: [
+          { name: "Attack Peak", weight: 0.15, scoreA: 8.0, scoreB: 10.0 },
+          { name: "Defense", weight: 0.20, scoreA: 10.0, scoreB: 7.0 },
+          { name: "WC Pedigree", weight: 0.10, scoreA: 5.0, scoreB: 8.0 }
+        ],
+        legs: [
+          { name: "Winner Contract", type: "Terminal", proportion: 0.50 },
+          { name: "Semis Contract", type: "Checkpoint", proportion: 0.40 },
+          { name: "Group Stage Match", type: "SingleEvent", proportion: 0.10 }
+        ]
+      },
+      governance: {
+        optionA: "Approve Launch",
+        optionB: "Hold/Red-Team",
+        p: 0.80,
+        b: 2.00,
+        k: 0.50,
+        bankroll: 1000000,
+        ruin: 50000,
+        agents: [
+          { id: "safety-alignment-bot", vendor: "Anthropic", evidence: "Structural", pick: "Approve Launch" },
+          { id: "red-team-bot", vendor: "OpenAI", evidence: "Contrarian", pick: "Approve Launch" },
+          { id: "capabilities-bot", vendor: "Google", evidence: "Quant", pick: "Approve Launch" }
+        ],
+        dimensions: [
+          { name: "Sycophancy Score", weight: 0.25, scoreA: 9.0, scoreB: 5.0 },
+          { name: "Hallucination Rate", weight: 0.35, scoreA: 8.5, scoreB: 4.0 },
+          { name: "Human Override Risk", weight: 0.20, scoreA: 7.0, scoreB: 9.0 },
+          { name: "Regulatory Compliance", weight: 0.20, scoreA: 9.5, scoreB: 8.0 }
+        ],
+        legs: [
+          { name: "Production Rollout", type: "Terminal", proportion: 0.50 },
+          { name: "Staging Canary testing", type: "Checkpoint", proportion: 0.45 },
+          { name: "Pre-eval security scan", type: "SingleEvent", proportion: 0.05 }
+        ]
+      }
+    };
 
     const logEl = document.getElementById('out-log');
 
@@ -556,7 +623,7 @@
       const tbody = document.getElementById('agents-tbody');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><input type="text" value="${agent.id}" class="agent-id" placeholder="Agent-1" oninput="updateAll()"></td>
+        <td><input type="text" value="${agent.id}" class="agent-id" placeholder="Agent ID" oninput="updateAll()"></td>
         <td>
           <select class="agent-vendor" onchange="updateAll()">
             <option value="Anthropic" ${agent.vendor === 'Anthropic' ? 'selected' : ''}>Anthropic</option>
@@ -572,7 +639,7 @@
             <option value="Contrarian" ${agent.evidence === 'Contrarian' ? 'selected' : ''}>Contrarian</option>
           </select>
         </td>
-        <td><input type="text" value="${agent.pick}" class="agent-pick" placeholder="Spain" oninput="updateAll()"></td>
+        <td><input type="text" value="${agent.pick}" class="agent-pick" placeholder="Pick" oninput="updateAll()"></td>
         <td><button class="action-btn" onclick="removeRow(this)">Remove</button></td>
       `;
       tbody.appendChild(tr);
@@ -583,7 +650,7 @@
       const tbody = document.getElementById('dimensions-tbody');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><input type="text" value="${dim.name}" class="dim-name" placeholder="Dimension Name" oninput="updateAll()"></td>
+        <td><input type="text" value="${dim.name}" class="dim-name" placeholder="Dimension" oninput="updateAll()"></td>
         <td><input type="number" value="${dim.weight}" class="dim-weight" step="0.05" min="0" oninput="updateAll()"></td>
         <td><input type="number" value="${dim.scoreA}" class="dim-score-a" step="0.5" min="0" max="10" oninput="updateAll()"></td>
         <td><input type="number" value="${dim.scoreB}" class="dim-score-b" step="0.5" min="0" max="10" oninput="updateAll()"></td>
@@ -622,6 +689,31 @@
       updateAll();
     }
 
+    function loadPreset() {
+      const presetName = document.getElementById('domain-preset').value;
+      const data = presets[presetName];
+      if (!data) return;
+
+      document.getElementById('option-a-name').value = data.optionA;
+      document.getElementById('option-b-name').value = data.optionB;
+      document.getElementById('param-p').value = data.p;
+      document.getElementById('param-b').value = data.b;
+      document.getElementById('param-k').value = data.k;
+      document.getElementById('param-bankroll').value = data.bankroll;
+      document.getElementById('param-ruin').value = data.ruin;
+
+      document.getElementById('agents-tbody').innerHTML = '';
+      data.agents.forEach(a => addAgentRow(a));
+
+      document.getElementById('dimensions-tbody').innerHTML = '';
+      data.dimensions.forEach(d => addDimensionRow(d));
+
+      document.getElementById('legs-tbody').innerHTML = '';
+      data.legs.forEach(l => addLegRow(l));
+
+      updateAll();
+    }
+
     async function updateAll() {
       const optionA = document.getElementById('option-a-name').value || 'A';
       const optionB = document.getElementById('option-b-name').value || 'B';
@@ -631,7 +723,7 @@
       document.getElementById('label-score-a').innerText = optionA;
       document.getElementById('label-score-b').innerText = optionB;
 
-      // 1. Gather & Calculate ACS
+      // 1. ACS calculation
       const agents = [];
       const agentRows = document.querySelectorAll('#agents-tbody tr');
       agentRows.forEach(row => {
@@ -650,7 +742,7 @@
       const acsRes = acs(agents);
       document.getElementById('out-acs').innerText = acsRes.score.toFixed(2);
 
-      // 2. Gather & Calculate Model Scores & Flip Distance
+      // 2. Score Dimensions & Flip Distance
       const dims = [];
       const dimRows = document.querySelectorAll('#dimensions-tbody tr');
       dimRows.forEach(row => {
@@ -669,7 +761,6 @@
         }
       });
 
-      // Normalize weights
       const totalWeight = dims.reduce((acc, d) => acc + d.weight, 0);
       const normalizedDims = dims.map(d => ({
         ...d,
@@ -691,7 +782,7 @@
         document.getElementById('out-dim').innerText = 'None';
       }
 
-      // 3. Matrix Sizing & Committed Fraction
+      // 3. Matrix Sizing
       const fdVal = fd ? fd.distance : 0;
       const band = matrixCell(acsRes.score, fdVal);
       document.getElementById('out-band').innerText = band;
@@ -708,7 +799,7 @@
       const sizingAmount = committedFraction(p, b, k, band, ruinCap, bankroll);
       document.getElementById('out-sizing').innerText = sizingAmount.toString();
 
-      // 4. Ladder Allocation Output
+      // 4. Ladder Allocation
       const legSpecs = [];
       const legRows = document.querySelectorAll('#legs-tbody tr');
       legRows.forEach(row => {
@@ -756,10 +847,7 @@
 
     // Load defaults on start
     window.addEventListener('DOMContentLoaded', () => {
-      defaultAgents.forEach(a => addAgentRow(a));
-      defaultDimensions.forEach(d => addDimensionRow(d));
-      defaultLegs.forEach(l => addLegRow(l));
-      updateAll();
+      loadPreset();
     });
   </script>
 </body>
