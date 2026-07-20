@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polymorphic Decision Protocol (PDP) Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --panel-bg: rgba(17, 24, 39, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.15);
+      --accent-cyan: #06b6d4;
+      --accent-pink: #ec4899;
+      --gradient-main: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 118, 212, 0.12) 0px, transparent 50%);
+    }
+
+    header {
+      padding: 2rem 4rem;
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .status-badge {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-badge::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      header {
+        padding: 1.5rem;
+      }
+    }
+
+    .card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: border-color 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(139, 92, 246, 0.25);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: -0.3px;
+    }
+
+    /* Grid/Layout helpers */
+    .span-2 {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 1024px) {
+      .span-2 {
+        grid-column: span 1;
+      }
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    /* Score sliders and outputs */
+    .slider-container {
+      margin-bottom: 1.25rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    /* Live Output metrics */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      padding: 1.25rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      margin-top: 0.25rem;
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Hashing flow log */
+    .mono-log {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1.25rem;
+      border-radius: 8px;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    .log-entry {
+      margin-bottom: 0.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .log-hash {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .log-msg {
+      color: var(--text-main);
+    }
+
+    /* Dynamic button styles */
+    .btn {
+      background: var(--gradient-main);
+      border: none;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    /* Form control */
+    .control-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .input-number {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem;
+      border-radius: 6px;
+      color: var(--text-main);
+      width: 100px;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Polymorphic Decision Protocol</h1>
+    <div class="status-badge">Locked (Post-Entry Monitor)</div>
+  </header>
+
+  <main>
+    
+    <!-- 1. General Panel & ACS Score Card -->
+    <div class="card">
+      <div class="card-title">
+        <span>Consensus Panel (ACS)</span>
+        <span style="color: var(--primary);">Axis 1 & 2 Discounting</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+        Analyzes the consensus and counts model/vendor correlation. Unanimous shared-evidence class resolves to 0.5; cross-vendor cross-evidence resolves to 1.0.
+      </p>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-label">Panel Size</div>
+          <div class="metric-value" id="acs-panel-size">3</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Agreement</div>
+          <div class="metric-value" id="acs-agree-pct">100%</div>
+        </div>
+        <div class="metric-card" style="background: var(--primary-glow); border-color: rgba(139, 92, 246, 0.3);">
+          <div class="metric-label">ACS Score</div>
+          <div class="metric-value" id="acs-score">0.50</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Agent ID</th>
+            <th>Vendor</th>
+            <th>Evidence Class</th>
+            <th>Pick</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>claude-3-5</td>
+            <td>Anthropic</td>
+            <td>Quant</td>
+            <td style="color: var(--accent-cyan); font-weight: 600;">Spain</td>
+          </tr>
+          <tr>
+            <td>gpt-4o</td>
+            <td>OpenAI</td>
+            <td>Quant</td>
+            <td style="color: var(--accent-cyan); font-weight: 600;">Spain</td>
+          </tr>
+          <tr>
+            <td>gemini-1-5</td>
+            <td>Google</td>
+            <td>Quant</td>
+            <td style="color: var(--accent-cyan); font-weight: 600;">Spain</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. Weight Perturbation & Flip Distance Card -->
+    <div class="card">
+      <div class="card-title">
+        <span>Interactive Sensitivity (Flip Distance)</span>
+        <span style="color: var(--accent-pink);">Live Simulator</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+        Perturbs the frozen dimensions pro-rata to calculate the Flip Distance (minimum change required to flip the top picks Spain & France).
+      </p>
+      
+      <div class="metric-grid" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="metric-card">
+          <div class="metric-label">Calculated Flip Distance</div>
+          <div class="metric-value" id="fd-value" style="color: var(--accent-pink);">0.1703</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Sensitive Dimension</div>
+          <div class="metric-value" id="fd-dimension" style="font-size: 1.2rem; color: #fff; margin-top: 0.6rem;">WC Pedigree</div>
+        </div>
+      </div>
+
+      <div id="sliders-container">
+        <!-- Sliders injected here dynamically -->
+      </div>
+
+      <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; display: flex; justify-content: space-around;">
+        <div>Spain score: <span id="score-spain" style="color: var(--accent-cyan); font-weight: bold;">8.65</span></div>
+        <div>France score: <span id="score-france" style="color: var(--accent-pink); font-weight: bold;">7.95</span></div>
+      </div>
+    </div>
+
+    <!-- 3. Sizing Matrix & Kelly Formula -->
+    <div class="card">
+      <div class="card-title">
+        <span>Sizing & Commitment Allocation</span>
+        <span style="color: var(--accent-cyan);">Fixed-Point Money</span>
+      </div>
+      
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-label">Sizing Band</div>
+          <div class="metric-value" id="sizing-band">Half</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Total Allocated</div>
+          <div class="metric-value" id="sizing-total" style="color: var(--accent-cyan);">$10.00</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Proposed</div>
+          <div class="metric-value" id="sizing-kelly-val">$2.30</div>
+        </div>
+      </div>
+
+      <div class="slider-container">
+        <div class="slider-header">
+          <span>Stated Probability (p)</span>
+          <span id="label-val-p">0.20</span>
+        </div>
+        <input type="range" id="param-p" min="0.01" max="0.99" step="0.01" value="0.20">
+      </div>
+
+      <div class="slider-container">
+        <div class="slider-header">
+          <span>Net Odds Blended (b)</span>
+          <span id="label-val-b">4.90</span>
+        </div>
+        <input type="range" id="param-b" min="0.5" max="20" step="0.1" value="4.90">
+      </div>
+
+      <div class="control-row">
+        <span>Bankroll ($):</span>
+        <input type="number" id="param-bankroll" value="1000" class="input-number">
+        <span>Ruin Cap ($):</span>
+        <input type="number" id="param-ruin" value="5" class="input-number">
+      </div>
+    </div>
+
+    <!-- 4. Ladder Allocation Verification -->
+    <div class="card">
+      <div class="card-title">
+        <span>Ladder Leg Allocation</span>
+        <span style="color: var(--primary);">Rounding Safe</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+        Integer-cent rounded and constrained by: Terminal sum (40%-60%), Checkpoint sum (40%-60%), Single-Event (<= 10%).
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Leg Name</th>
+            <th>Type</th>
+            <th>Prop.</th>
+            <th>Allocated</th>
+          </tr>
+        </thead>
+        <tbody id="ladder-table-body">
+          <!-- Injected dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. Tamper-Evident Event Log (SHA-256) -->
+    <div class="card span-2">
+      <div class="card-title">
+        <span>Event Verification Chain (SHA-256 Hashing)</span>
+        <span style="color: var(--accent-cyan); font-family: monospace;">Hash Chained</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+        Verification log calculating dynamic SHA-256 hashes of core state changes. Ensure records of thesis creation, weight freezing, sizing evaluation, and monitor states are cryptographically tamper-proof.
+      </p>
+      <div class="mono-log" id="verification-log">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { 
+      acs, 
+      scoreModel, 
+      flipDistance, 
+      matrixCell, 
+      committedFraction, 
+      allocateLadder, 
+      calculateHash, 
+      Cents 
+    } from './pdp-core.js';
+
+    // Mock initial dimensions matching Spain/France World Cup case
+    let dimensions = [
+      { name: 'Attack Peak', weight: 0.15, scores: { Spain: 8.0, France: 10.0 }, justification: '' },
+      { name: 'Attack Depth', weight: 0.15, scores: { Spain: 9.0, France: 8.0 }, justification: '' },
+      { name: 'Defense', weight: 0.20, scores: { Spain: 10.0, France: 7.0 }, justification: '' },
+      { name: 'Recent Form', weight: 0.15, scores: { Spain: 9.0, France: 8.0 }, justification: '' },
+      { name: 'WC Pedigree', weight: 0.10, scores: { Spain: 5.0, France: 8.0 }, justification: '' },
+      { name: 'Cohesion', weight: 0.10, scores: { Spain: 10.0, France: 8.0 }, justification: '' },
+      { name: 'Injury Risk', weight: 0.10, scores: { Spain: 9.0, France: 6.0 }, justification: '' },
+      { name: 'Experience', weight: 0.05, scores: { Spain: 7.0, France: 9.0 }, justification: '' }
+    ];
+
+    // Mock ladder specs
+    const legs = [
+      { name: 'Spain Winner', leg_type: 'Terminal', proportion: 0.50 },
+      { name: 'Spain Semis', leg_type: 'Checkpoint', proportion: 0.40 },
+      { name: 'ESP vs CPV', leg_type: 'SingleEvent', proportion: 0.10 }
+    ];
+
+    const logEl = document.getElementById('verification-log');
+
+    async function addLog(msg, data) {
+      const hash = await calculateHash(data);
+      const row = document.createElement('div');
+      row.className = 'log-entry';
+      row.innerHTML = `<span class="log-hash">[${hash.substring(0, 8)}]</span><span class="log-msg">${msg}</span>`;
+      logEl.appendChild(row);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // Initialize UI
+    async function init() {
+      // 1. ACS calculation
+      const agents = [
+        { agent_id: 'claude-1', vendor: 'Anthropic', evidence_class: 'Quant', pick: 'Spain', stated_p: 0.2, alternatives: [], load_bearing_facts: [], searched: '' },
+        { agent_id: 'gemini-1', vendor: 'Google', evidence_class: 'Quant', pick: 'Spain', stated_p: 0.2, alternatives: [], load_bearing_facts: [], searched: '' },
+        { agent_id: 'gpt-1', vendor: 'OpenAI', evidence_class: 'Quant', pick: 'Spain', stated_p: 0.2, alternatives: [], load_bearing_facts: [], searched: '' }
+      ];
+      const acsResult = acs(agents);
+      document.getElementById('acs-score').innerText = acsResult.score.toFixed(2);
+      await addLog('Consensus panel calculated (ACS)', acsResult);
+
+      // Render sliders for dimension weights
+      const slidersBox = document.getElementById('sliders-container');
+      slidersBox.innerHTML = '';
+      dimensions.forEach((dim, idx) => {
+        const div = document.createElement('div');
+        div.className = 'slider-container';
+        div.innerHTML = `
+          <div class="slider-header">
+            <span>${dim.name} (weight)</span>
+            <span id="slider-val-${idx}">${dim.weight.toFixed(2)}</span>
+          </div>
+          <input type="range" id="slider-input-${idx}" min="0.0" max="0.5" step="0.01" value="${dim.weight}">
+        `;
+        slidersBox.appendChild(div);
+
+        const slider = document.getElementById(`slider-input-${idx}`);
+        slider.addEventListener('input', async (e) => {
+          const newVal = parseFloat(e.target.value);
+          dimensions[idx].weight = newVal;
+          document.getElementById(`slider-val-${idx}`).innerText = newVal.toFixed(2);
+          await updateCalculations();
+        });
+      });
+
+      // Update parameters listeners
+      document.getElementById('param-p').addEventListener('input', (e) => {
+        document.getElementById('label-val-p').innerText = parseFloat(e.target.value).toFixed(2);
+        updateCalculations();
+      });
+      document.getElementById('param-b').addEventListener('input', (e) => {
+        document.getElementById('label-val-b').innerText = parseFloat(e.target.value).toFixed(2);
+        updateCalculations();
+      });
+      document.getElementById('param-bankroll').addEventListener('input', updateCalculations);
+      document.getElementById('param-ruin').addEventListener('input', updateCalculations);
+
+      await updateCalculations();
+    }
+
+    async function updateCalculations() {
+      // Re-normalize weights to sum to 1
+      const totalWeight = dimensions.reduce((acc, d) => acc + d.weight, 0);
+      let normalizedDims = dimensions.map(d => ({
+        ...d,
+        weight: totalWeight > 0 ? d.weight / totalWeight : 0
+      }));
+
+      // Calculate model scoring
+      const model = scoreModel(normalizedDims);
+      document.getElementById('score-spain').innerText = model.option_scores['Spain'] ? model.option_scores['Spain'].toFixed(2) : '0.00';
+      document.getElementById('score-france').innerText = model.option_scores['France'] ? model.option_scores['France'].toFixed(2) : '0.00';
+
+      // Flip distance calculation
+      const fd = flipDistance(model);
+      if (fd) {
+        document.getElementById('fd-value').innerText = fd.distance.toFixed(4);
+        document.getElementById('fd-dimension').innerText = fd.sensitive_dimension || 'None';
+      } else {
+        document.getElementById('fd-value').innerText = 'N/A';
+        document.getElementById('fd-dimension').innerText = 'None';
+      }
+
+      // Matrix sizing lookup
+      const acsVal = parseFloat(document.getElementById('acs-score').innerText);
+      const fdVal = fd ? fd.distance : 0.0;
+      const band = matrixCell(acsVal, fdVal);
+      document.getElementById('sizing-band').innerText = band;
+
+      // Committed fraction calculations
+      const p = parseFloat(document.getElementById('param-p').value);
+      const b = parseFloat(document.getElementById('param-b').value);
+      const ruinVal = parseFloat(document.getElementById('param-ruin').value);
+      const bankrollVal = parseFloat(document.getElementById('param-bankroll').value);
+
+      const ruinCap = Cents.fromDollars(ruinVal);
+      const bankroll = Cents.fromDollars(bankrollVal);
+
+      const size = committedFraction(p, b, 0.25, band, ruinCap, bankroll);
+      document.getElementById('sizing-kelly-val').innerText = size.toString();
+
+      // Ladder allocation
+      const totalAllocated = Cents.fromDollars(10.00); // Fixed demo total
+      document.getElementById('sizing-total').innerText = totalAllocated.toString();
+      
+      const tbody = document.getElementById('ladder-table-body');
+      tbody.innerHTML = '';
+      
+      try {
+        const ladder = allocateLadder(totalAllocated, legs);
+        ladder.legs.forEach(leg => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${leg.name}</td>
+            <td>${leg.leg_type}</td>
+            <td>${(leg.proportion * 100).toFixed(0)}%</td>
+            <td style="color: var(--accent-cyan); font-weight: bold;">${leg.allocated_amount ? leg.allocated_amount.toString() : '$0.00'}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="color: var(--accent-pink); text-align: center;">Allocation Error: ${err.message}</td></tr>`;
+      }
+
+      await addLog('Re-evaluated model scores and flip distance', { scores: model.option_scores, fd });
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
