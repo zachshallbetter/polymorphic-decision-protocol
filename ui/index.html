@@ -253,13 +253,46 @@
       letter-spacing: 0.5px;
     }
 
+    /* Comparative Report Card */
+    .report-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+
+    .report-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--accent-cyan);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+
+    .report-box p {
+      margin-bottom: 0.75rem;
+    }
+
+    .report-box ul {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .report-box li {
+      margin-bottom: 0.25rem;
+    }
+
     .mono-log {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       background: rgba(0, 0, 0, 0.4);
       padding: 1rem;
       border-radius: 8px;
-      max-height: 200px;
+      max-height: 180px;
       overflow-y: auto;
       border: 1px solid var(--border-color);
     }
@@ -331,11 +364,11 @@
         
         <div class="form-row" style="grid-template-columns: 2fr 1fr; margin-bottom: 1.5rem;">
           <div>
-            <label>Option A (Primary Candidate/Choice)</label>
+            <label>Option A (Primary Choice)</label>
             <input type="text" id="option-a-name" value="Candidate Alice" oninput="updateAll()">
           </div>
           <div>
-            <label>Option B (Hedge/Alternative)</label>
+            <label>Option B (Alternative/Hedge)</label>
             <input type="text" id="option-b-name" value="Candidate Bob" oninput="updateAll()">
           </div>
         </div>
@@ -417,7 +450,10 @@
       
       <!-- 1. Live Calculations Summary -->
       <div class="card" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%); border-color: rgba(139, 92, 246, 0.25);">
-        <div class="card-title" style="color: var(--accent-cyan);">Live Protocol Output Metrics</div>
+        <div class="card-title" style="color: var(--accent-cyan);">
+          <span>Live Protocol Output Metrics</span>
+          <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="updateAll(true)">Run Decision</button>
+        </div>
         
         <div class="metric-grid">
           <div class="metric-card">
@@ -451,7 +487,15 @@
         </div>
       </div>
 
-      <!-- 2. Allocated Ladder Legs Output -->
+      <!-- 2. Comparative Analysis Writeup -->
+      <div class="card">
+        <div class="card-title" style="color: var(--accent-cyan);">Comparative Evaluation Report</div>
+        <div class="report-box" id="report-content">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- 3. Allocated Ladder Legs Output -->
       <div class="card">
         <div class="card-title">Committed Ladder Distribution</div>
         <div style="overflow-x: auto;">
@@ -472,7 +516,7 @@
         <div id="alloc-error-box" style="margin-top: 1rem; color: var(--accent-pink); font-size: 0.85rem; display: none;"></div>
       </div>
 
-      <!-- 3. Event chain integrity ledger (SHA-256) -->
+      <!-- 4. Event chain integrity ledger (SHA-256) -->
       <div class="card">
         <div class="card-title">Tamper-Evident State Event Log</div>
         <div class="mono-log" id="out-log">
@@ -711,10 +755,10 @@
       document.getElementById('legs-tbody').innerHTML = '';
       data.legs.forEach(l => addLegRow(l));
 
-      updateAll();
+      updateAll(true);
     }
 
-    async function updateAll() {
+    async function updateAll(manualRun = false) {
       const optionA = document.getElementById('option-a-name').value || 'A';
       const optionB = document.getElementById('option-b-name').value || 'B';
       
@@ -837,12 +881,52 @@
         }
       }
 
-      await addLog('State evaluation completed', {
+      // Generate Comparative Report
+      generateComparativeReport(optionA, optionB, scoreA, scoreB, acsRes, fd, band, sizingAmount);
+
+      await addLog(manualRun ? 'Manual decision execution triggered' : 'State evaluation updated', {
         acs: acsRes.score,
         scores: model.option_scores,
         fd: fd ? fd.distance : null,
         sizing: sizingAmount.raw
       });
+    }
+
+    function generateComparativeReport(optionA, optionB, scoreA, scoreB, acsRes, fd, band, sizingAmount) {
+      const reportBox = document.getElementById('report-content');
+      
+      const leader = scoreA > scoreB ? optionA : optionB;
+      const runnerUp = leader === optionA ? optionB : optionA;
+      const leadScore = Math.max(scoreA, scoreB).toFixed(2);
+      const lagScore = Math.min(scoreA, scoreB).toFixed(2);
+      const scoreDiff = Math.abs(scoreA - scoreB).toFixed(2);
+
+      let consensusAssessment = '';
+      if (acsRes.score >= 0.75) {
+        consensusAssessment = 'high consensus with decoupled agent viewpoints';
+      } else if (acsRes.score >= 0.40) {
+        consensusAssessment = 'moderate consensus containing correlated panel viewpoints';
+      } else {
+        consensusAssessment = 'extremely weak panel convergence or heavy vendor alignment';
+      }
+
+      let sensitivitySection = '';
+      if (fd && fd.sensitive_dimension) {
+        sensitivitySection = `<p><strong>Sensitivity Assessment:</strong> The decision is sensitive to the dimension <strong>${fd.sensitive_dimension}</strong>. A weight perturbation of <strong>${fd.distance.toFixed(4)}</strong> in this dimension will flip the recommended choice to <em>${runnerUp}</em>.</p>`;
+      } else {
+        sensitivitySection = `<p><strong>Sensitivity Assessment:</strong> The current decision state is robust; no single weight perturbation can reverse the preference order of the candidates.</p>`;
+      }
+
+      reportBox.innerHTML = `
+        <h3>Decision Analysis Report</h3>
+        <p><strong>Recommendation:</strong> Under current weights, <strong>${leader}</strong> is selected over <strong>${runnerUp}</strong> by a score margin of <strong>${scoreDiff}</strong> (${leadScore} vs ${lagScore}).</p>
+        
+        <p><strong>Panel Consensus Quality:</strong> The panel shows ${consensusAssessment} (ACS = <strong>${acsRes.score.toFixed(2)}</strong>).</p>
+        
+        ${sensitivitySection}
+
+        <p><strong>Portfolio Governance & Sizing:</strong> Combining the sensitivity profile with the panel's convergence, the protocol enforces the <strong>${band}</strong> sizing band. This recommends a capital commitment of <strong>${sizingAmount.toString()}</strong>.</p>
+      `;
     }
 
     // Load defaults on start
