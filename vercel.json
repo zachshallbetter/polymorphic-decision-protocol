@@ -1,6 +1,6 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "buildCommand": "npx esbuild ui/pdp-core.ts --bundle --outfile=dist/pdp-core.js",
+  "buildCommand": "mkdir -p dist && npx esbuild ui/pdp-core.ts --bundle --format=esm --outfile=dist/pdp-core.js && cp ui/index.html dist/index.html",
   "outputDirectory": "dist"
 }
