@@ -1,0 +1,15 @@
+{
+  "name": "polymorphic-decision-protocol",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test:rust": "cargo test",
+    "test:ts": "node --experimental-strip-types ui/pdp-core.test.ts",
+    "test": "npm run test:rust && npm run test:ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.0.0"
+  }
+}
