@@ -3,21 +3,764 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Polymorphic Decision Protocol Playground</title>
+  <title>Polymorphic Decision Protocol (PDP) Interactive Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #080c14;
+      --panel-bg: rgba(13, 20, 35, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.15);
+      --accent-cyan: #06b6d4;
+      --accent-pink: #ec4899;
+      --gradient-main: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+    }
+
+    header {
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 12, 20, 0.8);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .status-badge {
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      color: var(--accent-cyan);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    main {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.75rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: border-color 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(139, 92, 246, 0.2);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: -0.3px;
+    }
+
+    /* Form controls */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn {
+      background: var(--gradient-main);
+      border: none;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    }
+
+    /* List table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    th, td {
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-btn {
+      cursor: pointer;
+      color: #ef4444;
+      background: none;
+      border: none;
+      font-size: 0.85rem;
+    }
+
+    /* Live Output cards */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      margin-top: 0.2rem;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mono-log {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    .log-entry {
+      margin-bottom: 0.4rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .log-hash {
+      color: var(--primary);
+    }
+
+    /* Sliders */
+    .slider-container {
+      margin-bottom: 1rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.3rem;
+      font-size: 0.85rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Polymorphic Decision Protocol Playground</h1>
-  <p>Open the browser developer console (F12) to inspect and interact with the <code>pdp-core.js</code> library.</p>
-  <p>The library is bound to <code>window.pdp</code>. You can run operations like:</p>
-  <pre>
-    pdp.matrixCell(0.8, 0.2) // Returns 'Full'
-    pdp.Cents.fromDollars(10.50).toString() // Returns '$10.50'
-  </pre>
+
+  <header>
+    <h1>Polymorphic Decision Protocol Playground</h1>
+    <div class="status-badge">Interactive Mode</div>
+  </header>
+
+  <main>
+    
+    <!-- LEFT COLUMN: Custom Inputs -->
+    <div class="column">
+      
+      <!-- 1. Elicitation Panel Inputs -->
+      <div class="card">
+        <div class="card-title">
+          <span>1. Consensus Panel (Agents)</span>
+          <button class="btn btn-secondary" onclick="addAgentRow()">+ Add Agent</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Agent ID</th>
+                <th>Vendor</th>
+                <th>Evidence Class</th>
+                <th>Pick</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="agents-tbody">
+              <!-- Dynamically added -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. Model Scoring & Weights Inputs -->
+      <div class="card">
+        <div class="card-title">
+          <span>2. Evaluation Dimensions & Scores</span>
+          <div>
+            <button class="btn btn-secondary" style="margin-right: 0.5rem;" onclick="addDimensionRow()">+ Add Dimension</button>
+            <button class="btn btn-secondary btn-danger" onclick="clearDimensions()">Clear</button>
+          </div>
+        </div>
+        
+        <div class="form-row" style="grid-template-columns: 2fr 1fr; margin-bottom: 1.5rem;">
+          <div>
+            <label>Option A Name</label>
+            <input type="text" id="option-a-name" value="Spain" oninput="updateAll()">
+          </div>
+          <div>
+            <label>Option B Name</label>
+            <input type="text" id="option-b-name" value="France" oninput="updateAll()">
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Weight</th>
+                <th id="th-score-a">Spain Score</th>
+                <th id="th-score-b">France Score</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="dimensions-tbody">
+              <!-- Dynamically added -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. Commitment & Sizing Inputs -->
+      <div class="card">
+        <div class="card-title">3. Kelly Sizing Parameters</div>
+        <div class="form-row">
+          <div>
+            <label>Prob (p)</label>
+            <input type="number" id="param-p" value="0.20" step="0.01" min="0" max="1" oninput="updateAll()">
+          </div>
+          <div>
+            <label>Net Odds (b)</label>
+            <input type="number" id="param-b" value="4.90" step="0.1" oninput="updateAll()">
+          </div>
+          <div>
+            <label>Kelly Fraction (k)</label>
+            <input type="number" id="param-k" value="0.25" step="0.05" oninput="updateAll()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Bankroll ($)</label>
+            <input type="number" id="param-bankroll" value="1000" oninput="updateAll()">
+          </div>
+          <div>
+            <label>Ruin Cap ($)</label>
+            <input type="number" id="param-ruin" value="5.00" step="0.5" oninput="updateAll()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Ladder Allocation Inputs -->
+      <div class="card">
+        <div class="card-title">
+          <span>4. Ladder Legs</span>
+          <button class="btn btn-secondary" onclick="addLegRow()">+ Add Leg</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Leg Name</th>
+                <th>Type</th>
+                <th>Proportion</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="legs-tbody">
+              <!-- Dynamically added -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: Live Outputs -->
+    <div class="column">
+      
+      <!-- 1. Live Calculations Summary -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%); border-color: rgba(139, 92, 246, 0.25);">
+        <div class="card-title" style="color: var(--accent-cyan);">Live Protocol Output Metrics</div>
+        
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-label">ACS Consensus</div>
+            <div class="metric-value" id="out-acs">0.00</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Flip Distance</div>
+            <div class="metric-value" id="out-fd">0.0000</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Sizing Band</div>
+            <div class="metric-value" id="out-band" style="font-size: 1.3rem; margin-top: 0.4rem;">Kill</div>
+          </div>
+        </div>
+
+        <div class="metric-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="metric-card">
+            <div class="metric-label">Sensitive Dimension</div>
+            <div class="metric-value" id="out-dim" style="font-size: 1.1rem; color: #fff; margin-top: 0.4rem;">None</div>
+          </div>
+          <div class="metric-card" style="background: var(--primary-glow); border-color: rgba(139, 92, 246, 0.2);">
+            <div class="metric-label">Kelly Sized Allocation</div>
+            <div class="metric-value" id="out-sizing" style="color: var(--accent-pink); font-size: 1.6rem;">$0.00</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); padding: 0.8rem; border-radius: 8px; font-size: 0.9rem; display: flex; justify-content: space-around;">
+          <div><span id="label-score-a">Spain</span> Score: <span id="out-score-a" style="color: var(--accent-cyan); font-weight: bold;">0.00</span></div>
+          <div><span id="label-score-b">France</span> Score: <span id="out-score-b" style="color: var(--accent-pink); font-weight: bold;">0.00</span></div>
+        </div>
+      </div>
+
+      <!-- 2. Allocated Ladder Legs Output -->
+      <div class="card">
+        <div class="card-title">Committed Ladder Allocation</div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Leg Name</th>
+                <th>Type</th>
+                <th>Proportion</th>
+                <th>Allocated Amount</th>
+              </tr>
+            </thead>
+            <tbody id="out-ladder-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+        <div id="alloc-error-box" style="margin-top: 1rem; color: var(--accent-pink); font-size: 0.85rem; display: none;"></div>
+      </div>
+
+      <!-- 3. Event chain integrity ledger (SHA-256) -->
+      <div class="card">
+        <div class="card-title">Tamper-Evident State Event Log</div>
+        <div class="mono-log" id="out-log">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
 
   <script type="module">
-    import * as pdp from './pdp-core.js';
-    console.log("PDP Core module loaded successfully:", pdp);
-    window.pdp = pdp; // Bind to window for interactive console testing
+    import { 
+      acs, 
+      scoreModel, 
+      flipDistance, 
+      matrixCell, 
+      committedFraction, 
+      allocateLadder, 
+      calculateHash, 
+      Cents 
+    } from './pdp-core.js';
+
+    // Global variables to expose functions
+    window.addAgentRow = addAgentRow;
+    window.addDimensionRow = addDimensionRow;
+    window.addLegRow = addLegRow;
+    window.clearDimensions = clearDimensions;
+    window.removeRow = removeRow;
+    window.updateAll = updateAll;
+
+    // Load defaults (Spain/France WC case)
+    const defaultAgents = [
+      { id: 'claude-3-5', vendor: 'Anthropic', evidence: 'Quant', pick: 'Spain' },
+      { id: 'gpt-4o', vendor: 'OpenAI', evidence: 'Quant', pick: 'Spain' },
+      { id: 'gemini-1-5', vendor: 'Google', evidence: 'Quant', pick: 'Spain' }
+    ];
+
+    const defaultDimensions = [
+      { name: 'Attack Peak', weight: 0.15, scoreA: 8.0, scoreB: 10.0 },
+      { name: 'Defense', weight: 0.20, scoreA: 10.0, scoreB: 7.0 },
+      { name: 'WC Pedigree', weight: 0.10, scoreA: 5.0, scoreB: 8.0 }
+    ];
+
+    const defaultLegs = [
+      { name: 'Winner Contract', type: 'Terminal', proportion: 0.50 },
+      { name: 'Semis Contract', type: 'Checkpoint', proportion: 0.40 },
+      { name: 'Group Stage Contract', type: 'SingleEvent', proportion: 0.10 }
+    ];
+
+    const logEl = document.getElementById('out-log');
+
+    async function addLog(msg, payload) {
+      const hash = await calculateHash(payload);
+      const row = document.createElement('div');
+      row.className = 'log-entry';
+      row.innerHTML = `<span class="log-hash">[${hash.substring(0, 8)}]</span><span class="log-msg">${msg}</span>`;
+      logEl.appendChild(row);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function addAgentRow(agent = { id: '', vendor: 'Anthropic', evidence: 'Quant', pick: 'Spain' }) {
+      const tbody = document.getElementById('agents-tbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" value="${agent.id}" class="agent-id" placeholder="Agent-1" oninput="updateAll()"></td>
+        <td>
+          <select class="agent-vendor" onchange="updateAll()">
+            <option value="Anthropic" ${agent.vendor === 'Anthropic' ? 'selected' : ''}>Anthropic</option>
+            <option value="OpenAI" ${agent.vendor === 'OpenAI' ? 'selected' : ''}>OpenAI</option>
+            <option value="Google" ${agent.vendor === 'Google' ? 'selected' : ''}>Google</option>
+          </select>
+        </td>
+        <td>
+          <select class="agent-evidence" onchange="updateAll()">
+            <option value="Quant" ${agent.evidence === 'Quant' ? 'selected' : ''}>Quant</option>
+            <option value="Market" ${agent.evidence === 'Market' ? 'selected' : ''}>Market</option>
+            <option value="Structural" ${agent.evidence === 'Structural' ? 'selected' : ''}>Structural</option>
+            <option value="Contrarian" ${agent.evidence === 'Contrarian' ? 'selected' : ''}>Contrarian</option>
+          </select>
+        </td>
+        <td><input type="text" value="${agent.pick}" class="agent-pick" placeholder="Spain" oninput="updateAll()"></td>
+        <td><button class="action-btn" onclick="removeRow(this)">Remove</button></td>
+      `;
+      tbody.appendChild(tr);
+      updateAll();
+    }
+
+    function addDimensionRow(dim = { name: '', weight: 0.1, scoreA: 5.0, scoreB: 5.0 }) {
+      const tbody = document.getElementById('dimensions-tbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" value="${dim.name}" class="dim-name" placeholder="Dimension Name" oninput="updateAll()"></td>
+        <td><input type="number" value="${dim.weight}" class="dim-weight" step="0.05" min="0" oninput="updateAll()"></td>
+        <td><input type="number" value="${dim.scoreA}" class="dim-score-a" step="0.5" min="0" max="10" oninput="updateAll()"></td>
+        <td><input type="number" value="${dim.scoreB}" class="dim-score-b" step="0.5" min="0" max="10" oninput="updateAll()"></td>
+        <td><button class="action-btn" onclick="removeRow(this)">Remove</button></td>
+      `;
+      tbody.appendChild(tr);
+      updateAll();
+    }
+
+    function addLegRow(leg = { name: '', type: 'Terminal', proportion: 0.33 }) {
+      const tbody = document.getElementById('legs-tbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" value="${leg.name}" class="leg-name" placeholder="Leg Name" oninput="updateAll()"></td>
+        <td>
+          <select class="leg-type" onchange="updateAll()">
+            <option value="Terminal" ${leg.type === 'Terminal' ? 'selected' : ''}>Terminal</option>
+            <option value="Checkpoint" ${leg.type === 'Checkpoint' ? 'selected' : ''}>Checkpoint</option>
+            <option value="SingleEvent" ${leg.type === 'SingleEvent' ? 'selected' : ''}>SingleEvent</option>
+          </select>
+        </td>
+        <td><input type="number" value="${leg.proportion}" class="leg-prop" step="0.05" min="0" max="1" oninput="updateAll()"></td>
+        <td><button class="action-btn" onclick="removeRow(this)">Remove</button></td>
+      `;
+      tbody.appendChild(tr);
+      updateAll();
+    }
+
+    function removeRow(btn) {
+      btn.closest('tr').remove();
+      updateAll();
+    }
+
+    function clearDimensions() {
+      document.getElementById('dimensions-tbody').innerHTML = '';
+      updateAll();
+    }
+
+    async function updateAll() {
+      const optionA = document.getElementById('option-a-name').value || 'A';
+      const optionB = document.getElementById('option-b-name').value || 'B';
+      
+      document.getElementById('th-score-a').innerText = `${optionA} Score`;
+      document.getElementById('th-score-b').innerText = `${optionB} Score`;
+      document.getElementById('label-score-a').innerText = optionA;
+      document.getElementById('label-score-b').innerText = optionB;
+
+      // 1. Gather & Calculate ACS
+      const agents = [];
+      const agentRows = document.querySelectorAll('#agents-tbody tr');
+      agentRows.forEach(row => {
+        const id = row.querySelector('.agent-id').value;
+        if (id) {
+          agents.push({
+            agent_id: id,
+            vendor: row.querySelector('.agent-vendor').value,
+            evidence_class: row.querySelector('.agent-evidence').value,
+            pick: row.querySelector('.agent-pick').value,
+            stated_p: 0.2, alternatives: [], load_bearing_facts: [], searched: ''
+          });
+        }
+      });
+
+      const acsRes = acs(agents);
+      document.getElementById('out-acs').innerText = acsRes.score.toFixed(2);
+
+      // 2. Gather & Calculate Model Scores & Flip Distance
+      const dims = [];
+      const dimRows = document.querySelectorAll('#dimensions-tbody tr');
+      dimRows.forEach(row => {
+        const name = row.querySelector('.dim-name').value;
+        if (name) {
+          const scores = {};
+          scores[optionA] = parseFloat(row.querySelector('.dim-score-a').value) || 0;
+          scores[optionB] = parseFloat(row.querySelector('.dim-score-b').value) || 0;
+
+          dims.push({
+            name,
+            weight: parseFloat(row.querySelector('.dim-weight').value) || 0,
+            scores,
+            justification: ''
+          });
+        }
+      });
+
+      // Normalize weights
+      const totalWeight = dims.reduce((acc, d) => acc + d.weight, 0);
+      const normalizedDims = dims.map(d => ({
+        ...d,
+        weight: totalWeight > 0 ? d.weight / totalWeight : 0
+      }));
+
+      const model = scoreModel(normalizedDims);
+      const scoreA = model.option_scores[optionA] || 0;
+      const scoreB = model.option_scores[optionB] || 0;
+      document.getElementById('out-score-a').innerText = scoreA.toFixed(2);
+      document.getElementById('out-score-b').innerText = scoreB.toFixed(2);
+
+      const fd = flipDistance(model);
+      if (fd) {
+        document.getElementById('out-fd').innerText = fd.distance.toFixed(4);
+        document.getElementById('out-dim').innerText = fd.sensitive_dimension || 'None';
+      } else {
+        document.getElementById('out-fd').innerText = 'N/A';
+        document.getElementById('out-dim').innerText = 'None';
+      }
+
+      // 3. Matrix Sizing & Committed Fraction
+      const fdVal = fd ? fd.distance : 0;
+      const band = matrixCell(acsRes.score, fdVal);
+      document.getElementById('out-band').innerText = band;
+
+      const p = parseFloat(document.getElementById('param-p').value) || 0;
+      const b = parseFloat(document.getElementById('param-b').value) || 0;
+      const k = parseFloat(document.getElementById('param-k').value) || 0;
+      const bankrollVal = parseFloat(document.getElementById('param-bankroll').value) || 0;
+      const ruinVal = parseFloat(document.getElementById('param-ruin').value) || 0;
+
+      const ruinCap = Cents.fromDollars(ruinVal);
+      const bankroll = Cents.fromDollars(bankrollVal);
+
+      const sizingAmount = committedFraction(p, b, k, band, ruinCap, bankroll);
+      document.getElementById('out-sizing').innerText = sizingAmount.toString();
+
+      // 4. Ladder Allocation Output
+      const legSpecs = [];
+      const legRows = document.querySelectorAll('#legs-tbody tr');
+      legRows.forEach(row => {
+        const name = row.querySelector('.leg-name').value;
+        if (name) {
+          legSpecs.push({
+            name,
+            leg_type: row.querySelector('.leg-type').value,
+            proportion: parseFloat(row.querySelector('.leg-prop').value) || 0
+          });
+        }
+      });
+
+      const outTable = document.getElementById('out-ladder-tbody');
+      const errBox = document.getElementById('alloc-error-box');
+      outTable.innerHTML = '';
+      errBox.style.display = 'none';
+
+      if (legSpecs.length > 0) {
+        try {
+          const ladder = allocateLadder(sizingAmount, legSpecs);
+          ladder.legs.forEach(leg => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${leg.name}</td>
+              <td>${leg.leg_type}</td>
+              <td>${(leg.proportion * 100).toFixed(0)}%</td>
+              <td style="color: var(--accent-cyan); font-weight: 600;">${leg.allocated_amount ? leg.allocated_amount.toString() : '$0.00'}</td>
+            `;
+            outTable.appendChild(tr);
+          });
+        } catch (err) {
+          errBox.innerText = `Constraint Error: ${err.message}`;
+          errBox.style.display = 'block';
+        }
+      }
+
+      await addLog('State evaluation completed', {
+        acs: acsRes.score,
+        scores: model.option_scores,
+        fd: fd ? fd.distance : null,
+        sizing: sizingAmount.raw
+      });
+    }
+
+    // Load defaults on start
+    window.addEventListener('DOMContentLoaded', () => {
+      defaultAgents.forEach(a => addAgentRow(a));
+      defaultDimensions.forEach(d => addDimensionRow(d));
+      defaultLegs.forEach(l => addLegRow(l));
+      updateAll();
+    });
   </script>
 </body>
 </html>
