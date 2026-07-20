@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "buildCommand": "npx esbuild ui/pdp-core.ts --bundle --outfile=dist/pdp-core.js",
+  "outputDirectory": "dist"
+}
