@@ -1,5 +1,8 @@
 # Polymorphic Decision Protocol (PDP)
 
+**Protocol version:** `1.3.0`
+**Status:** Reference design and recorded case
+
 A procedure for making high-uncertainty decisions with panels of AI systems, where consensus is discounted by input provenance, model confidence is tested under controlled pressure, and the human owns the weights, the stakes, and the exit.
 
 The protocol came out of a settled real-money case: a 2026 World Cup thesis formed across Claude, Gemini, and ChatGPT, staked as an eight-market ladder on Kalshi ($10 → $58.86), and held through a documented event in which one panel system abandoned the correct pick under nothing but expressed displeasure, retracted when challenged, four days before the market it had switched to settled at zero. The protocol formalizes what held, closes what broke, and pre-registers the next test.
