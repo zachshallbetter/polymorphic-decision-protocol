@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this protocol, please cite it as below."
-title: "Polymorphic Decision Protocol (PDP)"
+title: "Polymorphic Decision Protocol"
 abstract: >-
   A procedure for making high-uncertainty decisions with panels of AI systems,
   where consensus is discounted by input provenance, model confidence is tested
@@ -12,15 +12,15 @@ authors:
     given-names: Zachary
     orcid: "https://orcid.org/0009-0009-9450-3429"
 version: "1.3.0"
-date-released: "2026-07-20"
+date-released: "2026-10-11"
 license: MIT
 repository-code: "https://github.com/zachshallbetter/polymorphic-decision-protocol"
 url: "https://polymorphic-decision-protocol.vercel.app"
 keywords:
   - decision protocol
-  - AI panels
+  - high-uncertainty decisions
   - provenance
   - calibration
-  - high-uncertainty decisions
   - human-in-the-loop
+  - panel methods
 # doi: 10.5281/zenodo.XXXXXXXX  # concept DOI — fill after first Zenodo version
