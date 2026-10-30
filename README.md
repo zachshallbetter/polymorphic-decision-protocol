@@ -2,7 +2,7 @@
 
 **Identifier:** `pdp`  
 **Protocol version:** `1.3.0`
-**Repository release:** `1.3.1`
+**Repository release:** `1.3.2`
 **Software package version:** `0.1.0` (Rust crate and npm package; versioned independently from the protocol)
 **Status:** Normative Candidate; reference design and recorded case
 **Question:** How should a high-uncertainty decision be made with a panel of systems while preserving human ownership of weights, stakes, and exit?
@@ -45,4 +45,4 @@ For the method: essay → protocol article → specification. For the build: spe
 
 ## License and citation
 
-Specification and articles © 2026 Zach Shallbetter. A DOI for the specification (v1.3) is planned via the author's deposit pipeline; until minted, cite the specification by title, version, and https://zachshallbetter.com. ORCID: 0009-0009-9450-3429.
+Specification and articles © 2026 Zach Shallbetter. The repository deposit DOI is [10.5281/zenodo.23797875](https://doi.org/10.5281/zenodo.23797875) (concept DOI). The protocol remains version 1.3.0. ORCID: 0009-0009-9450-3429.

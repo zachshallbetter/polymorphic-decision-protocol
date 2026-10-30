@@ -12,6 +12,7 @@ Generates versioned llms index and full codebase corpus files in `.agents/` and 
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
@@ -35,15 +36,11 @@ EXCLUDE: dict[str, str] = {}
 
 
 def get_version() -> str:
-    try:
-        out = subprocess.run(["git", "-C", str(ROOT), "describe", "--tags", "--abbrev=0"],
-                             capture_output=True, check=True, text=True).stdout.strip()
-        if out:
-            return out.lstrip("v")
-    except Exception:
-        pass
-    return "1.3.0"
-
+    metadata = json.loads((ROOT / ".zenodo.json").read_text(encoding="utf-8"))
+    version = metadata.get("version")
+    if not isinstance(version, str) or not version.strip():
+        raise ValueError(".zenodo.json must declare the repository release version")
+    return version.strip().lstrip("v")
 
 def is_excluded(rel: str) -> str | None:
     for path, reason in EXCLUDE.items():
