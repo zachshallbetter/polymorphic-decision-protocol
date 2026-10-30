@@ -1,8 +1,8 @@
 {
   "title": "Polymorphic Decision Protocol",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "upload_type": "software",
-  "description": "Specification version 1.3.0 of the Polymorphic Decision Protocol, including architecture notes, schema, case narrative, pre-registration, and evaluation fixtures. The protocol version is independent of any package.json packaging version.",
+  "description": "Polymorphic Decision Protocol repository release 1.3.1, packaging protocol version 1.3.0 with an added foundational research paper and refreshed metadata.",
   "creators": [
     {
       "name": "Shallbetter, Zachary",
@@ -15,14 +15,32 @@
     "provenance",
     "calibration",
     "human-in-the-loop",
-    "panel methods"
+    "panel methods",
+    "epistemic pressure testing",
+    "brier scoring"
   ],
-  "license": "mit-license",
+  "license": "mit",
   "access_right": "open",
+  "language": "eng",
   "related_identifiers": [
     {
-      "identifier": "https://github.com/zachshallbetter/polymorphic-decision-protocol/tree/v1.3.0",
+      "identifier": "https://github.com/zachshallbetter/polymorphic-decision-protocol/tree/v1.3.1",
       "relation": "isSupplementTo",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/zachshallbetter/polymorphic-decision-protocol/releases/tag/v1.3.1",
+      "relation": "isIdenticalTo",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.5281/zenodo.23290487",
+      "relation": "references",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "10.5281/zenodo.20989937",
+      "relation": "references",
       "resource_type": "software"
     }
   ]

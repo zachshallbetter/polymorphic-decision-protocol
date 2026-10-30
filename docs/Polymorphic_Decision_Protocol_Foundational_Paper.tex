@@ -1,0 +1,645 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+
+\definecolor{academicblue}{RGB}{20, 50, 95}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=academicblue,
+    citecolor=academicblue,
+    urlcolor=academicblue
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\rhead{\small\textcolor{gray}{\leftmark}}
+\cfoot{\thepage}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Polymorphic Decision Protocol: Deterministic Multi-Agent Deliberation and Pressure-Testing Under Epistemic Uncertainty},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Polymorphic Decision Protocol: Deterministic Multi-Agent
+Deliberation and Pressure-Testing Under Epistemic Uncertainty}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{A Procedural Architecture for Provenance-Discounted Consensus
+and Calibrated Execution}
+\author{true}
+\date{2026-10-23}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{Polymorphic Decision
+Protocol}\label{polymorphic-decision-protocol}
+
+\emph{Deterministic Multi-Agent Deliberation and Pressure-Testing Under
+Epistemic Uncertainty}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{EXECUTIVE DECISION}
+
+\textbf{Do not treat raw AI model agreement as probability or truth.}
+
+High-uncertainty decision systems must discount multi-model agreement by
+input provenance, apply adversarial pressure prompts to detect
+sycophancy, score formal models against human-held frozen weights, and
+benchmark against naive counterfactuals using Brier scores. The human
+holds absolute custody of weights, stakes, and the exit gate.
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ \\
+\end{longtable}
+
+\subsection{Contents}\label{contents}
+
+\begin{itemize}
+\tightlist
+\item
+  \hyperref[executive-decision]{Executive Decision}
+\item
+  \hyperref[1-research-question-and-decision-standard]{1. Research
+  Question and Decision Standard}
+\item
+  \hyperref[2-scope-and-core-explanandum]{2. Scope and Core Explanandum}
+\item
+  \hyperref[3-method-and-evidential-basis]{3. Method and Evidential
+  Basis}
+\item
+  \hyperref[4-literature-review-and-explanatory-boundaries]{4.
+  Literature Review and Explanatory Boundaries}
+\item
+  \hyperref[5-critique-of-current-working-directions]{5. Critique of
+  Current Working Directions}
+\item
+  \hyperref[6-canonical-ontology]{6. Canonical Ontology}
+\item
+  \hyperref[7-foundational-assumptions-and-first-principles]{7.
+  Foundational Assumptions and First Principles}
+\item
+  \hyperref[8-minimum-formal-model]{8. Minimum Formal Model}
+\item
+  \hyperref[9-primitives-grammar-and-composition-rules]{9. Primitives,
+  Grammar, and Composition Rules}
+\item
+  \hyperref[10-evidence-measurement-and-operationalization]{10.
+  Evidence, Measurement, and Operationalization}
+\item
+  \hyperref[11-falsifiability-and-decisive-tests]{11. Falsifiability and
+  Decisive Tests}
+\item
+  \hyperref[12-negative-results-and-construct-stress-register]{12.
+  Negative Results and Construct-Stress Register}
+\item
+  \hyperref[13-threats-to-validity-and-limitations]{13. Threats to
+  Validity and Limitations}
+\item
+  \hyperref[14-reusable-artifacts-and-conformance-contracts]{14.
+  Reusable Artifacts and Conformance Contracts}
+\item
+  \hyperref[references]{References}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Executive Decision}\label{executive-decision}
+
+\textbf{Decision: Raw multi-agent agreement in artificial intelligence
+is not epistemic consensus.}
+
+When multiple LLMs from distinct providers converge on the same
+recommendation, operators routinely interpret this concurrence as
+independent confirmation. This inference is an epistemic fallacy: modern
+frontier models share internet-scale training data, overlapping
+pre-training mixtures, common post-training fine-tuning practices, and
+systematic sycophancy biases.
+
+The \textbf{Polymorphic Decision Protocol (PDP)} resolves this by
+formalizing an adversarial deliberation procedure: 1.
+\textbf{Provenance-Discounted Consensus:} Model agreement is discounted
+by an explicit shared-observable index to prevent correlated errors from
+masquerading as epistemic certainty; 2. \textbf{Adversarial Pressure
+Testing:} Every agent's recommendation is challenged with a naked
+contrarian prompt (\texttt{"I\ think\ you\textquotesingle{}re\ wrong"})
+to measure sycophantic reversal; 3. \textbf{Custody Separation:}
+Decision criteria weights are set, committed, and frozen in writing by
+the human operator before candidate evaluations are viewed; 4.
+\textbf{Empirical Benchmarking:} Protocol-selected outcomes are
+evaluated prospectively against naive single-model counterfactuals via
+Brier scoring (Brier 1950).
+
+\subsubsection{Recommended Institutional
+Form}\label{recommended-institutional-form}
+
+Deploy PDP as an explicit organizational gate and automated runtime
+pipeline (\texttt{pdp-server}) for irreversible, high-uncertainty
+commitments (capital allocation, architectural pivots, high-impact
+policy decisions).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{1. Research Question and Decision
+Standard}\label{research-question-and-decision-standard}
+
+\subsubsection{1.1 The Governing Question}\label{the-governing-question}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Weak Form:} Does a structured multi-model panel catch
+  qualitative reasoning errors that a single prompting session misses?
+\item
+  \textbf{Strong Form:} Can a formal protocol consisting of provenance
+  discounting, pressure flips, and human-custody weighting outperform
+  the uncalibrated raw consensus of top-tier models on a prospective,
+  out-of-sample Brier scoring standard?
+\end{itemize}
+
+\subsubsection{1.2 Decision Standard and Halting
+Threshold}\label{decision-standard-and-halting-threshold}
+
+\[\overline{BS}_{\text{PDP}} < \overline{BS}_{\text{Naive}}\]
+
+If, over accumulating prospective trials, the Brier score of the
+PDP-governed decision fails to demonstrate statistically significant
+calibration gain over the naive top-confidence model pick, the
+protocol's complexity is not buying accuracy, and the protocol must be
+formally revised or retired.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{2. Scope and Core
+Explanandum}\label{scope-and-core-explanandum}
+
+\subsubsection{2.1 Core Explanandum}\label{core-explanandum}
+
+The primary scientific object is the \textbf{calibration of judgment
+under uncertainty}: the mathematical and operational relation between
+subjective confidence, multi-agent epistemic independence, and objective
+realization in irreversible decision events.
+
+\subsubsection{2.2 Deliberate Exclusions}\label{deliberate-exclusions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Autonomous Order Execution:} PDP v1 does not auto-execute
+  financial or legal transactions; it halts at the human gate.
+\item
+  \textbf{Low-Stakes Automation:} It does not govern high-frequency,
+  reversible tasks where iteration cost is zero.
+\item
+  \textbf{Model Fine-Tuning:} It does not retrain weights; it structures
+  the inference protocol.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{3. Method and Evidential
+Basis}\label{method-and-evidential-basis}
+
+\subsubsection{3.1 Provenance Tiers}\label{provenance-tiers}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Tier 1 (External Truth):} Settlement events verified through
+  independent public registers or regulated prediction contracts
+  (e.g.~Kalshi / Polymarket);
+\item
+  \textbf{Tier 2 (Adversarial Interaction):} Model flip behavior
+  recorded via raw, unedited API execution logs;
+\item
+  \textbf{Tier 3 (Internal Scoring):} Quadratic Brier scores and
+  Agreement Correlation Scores (ACS) computed deterministically.
+\end{itemize}
+
+\subsubsection{3.2 Pre-registration and Freeze
+Sequence}\label{pre-registration-and-freeze-sequence}
+
+Every trial (including Test 001 and Test 002) commits its question,
+panel roster, criteria weights, and naive counterfactual prediction to a
+public Git repository \textbf{before} the decision outcome is realized
+(Shallbetter 2026c).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Literature Review and Explanatory
+Boundaries}\label{literature-review-and-explanatory-boundaries}
+
+\subsubsection{4.1 Prior Foundations}\label{prior-foundations}
+
+Probabilistic forecast calibration traces to Brier's scoring rule (Brier
+1950) and Tetlock's empirical superforecasting tournaments (Tetlock and
+Gardner 2015), establishing that team deliberation improves calibration
+only when members possess cognitive diversity and update on evidence
+rather than social consensus. Information-theoretic diversity relates
+directly to entropy and channel independence (Shannon 1948).
+
+\subsubsection{4.2 Explanatory Boundaries}\label{explanatory-boundaries}
+
+Existing ensemble methods (e.g., majority voting, mixture of agents)
+assume independent and identically distributed (i.i.d.) errors across
+models. PDP explicitly addresses the non-i.i.d., highly correlated
+failure modes unique to LLM panels.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{5. Critique of Current Working
+Directions}\label{critique-of-current-working-directions}
+
+Current ``Agent Swarms'' and ``Debate Frameworks'' suffer from three
+fatal flaws: 1. \textbf{Echo Chambers:} Models rapidly agree with the
+most articulate or verbose participant; 2. \textbf{Operator Sycophancy:}
+Models abandon rigorous deductions the moment an operator hints at
+disagreement; 3. \textbf{Hindsight Scoring:} Rationalizations are
+rewritten post-hoc to claim that the ensemble ``essentially had it
+right.''
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{6. Canonical Ontology}\label{canonical-ontology}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Formal Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Canonical Definition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Exclusions
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Elicitation} & Structured Tuple & An isolated query yielding a
+ranked pick, probability \(P\), next-best alternative, and top
+load-bearing facts. & Not an open-ended conversational reply. \\
+\textbf{Pressure Prompt} & Standard String & The exact prompt
+\texttt{"I\ think\ you\textquotesingle{}re\ wrong."} submitted without
+supporting rationale. & No hints, arguments, or leading clues. \\
+\textbf{Flip Category} & Partition Enum & Classification of
+post-pressure behavior: \texttt{Robust}, \texttt{Evidence-Driven},
+\texttt{Pressure-Driven}, \texttt{Collapse}. & Not a continuous
+score. \\
+\textbf{Frozen Weights} & Simplex Vector & Human-assigned criteria
+weights \(\vec{w}\) (\(\sum w_i = 1\)) committed before seeing scores. &
+Cannot be adjusted post-scoring. \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{7. Foundational Assumptions and First
+Principles}\label{foundational-assumptions-and-first-principles}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{A1 (Epistemic Subsidiarity):} Machines infer correlations,
+  structure options, and measure trade-offs; humans own values, loss
+  functions, and risk limits.
+\item
+  \textbf{A2 (Sycophancy Penalty):} An agent that reverses its
+  conclusion under social pressure without new facts provides negative
+  evidence.
+\item
+  \textbf{A3 (Irreversible Gate):} Once a commitment is staked,
+  execution cannot be altered except via a pre-committed,
+  event-triggered exit condition.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{8. Minimum Formal Model}\label{minimum-formal-model}
+
+\subsubsection{8.1 Agreement Correlation Score
+(ACS)}\label{agreement-correlation-score-acs}
+
+Given \(K\) agents with stated pick distributions \(\vec{p}_k\), raw
+agreement is discounted by an observable overlap matrix
+\(\mathbf{C} \in [0, 1]^{K \times K}\):
+
+\[\text{ACS} = \frac{1}{\binom{K}{2}} \sum_{i < j} (1 - C_{ij}) \cdot \operatorname{sim}(\vec{p}_i, \vec{p}_j)\]
+
+Where \(C_{ij}\) quantifies the shared provenance of evidence between
+models \(i\) and \(j\).
+
+\subsubsection{8.2 Brier Calibration
+Metric}\label{brier-calibration-metric}
+
+For a binary outcome \(y \in \{0, 1\}\) and forecast probability
+\(f \in [0, 1]\):
+
+\[BS = (f - y)^2\]
+
+Calibration skill across \(N\) decisions is evaluated as the Brier Skill
+Score relative to the naive baseline:
+
+\[BSS = 1 - \frac{\sum_{n=1}^N (f_{\text{PDP}, n} - y_n)^2}{\sum_{n=1}^N (f_{\text{Naive}, n} - y_n)^2}\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{9. Primitives, Grammar, and Composition
+Rules}\label{primitives-grammar-and-composition-rules}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Primitives:} Agents (\(A\)), Evidence Units (\(E\)),
+  Hypotheses (\(H\)), Pressure Prompts (\(\Pi\)), Invalidation Criteria
+  (\(\Omega\)).
+\item
+  \textbf{Pipeline State Machine:}
+  \[\text{Draft} \longrightarrow \text{Elicited} \longrightarrow \text{Scored} \longrightarrow \text{Pressure-Tested} \longrightarrow \text{Committed} \longrightarrow \text{Settled}\]
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{10. Evidence, Measurement, and
+Operationalization}\label{evidence-measurement-and-operationalization}
+
+The evaluation harness in \texttt{crates/pdp-judge} executes: 1.
+\texttt{validate\_elicitation}: Enforces presence of probability and
+facts; 2. \texttt{classify\_flip}: Verifies whether new facts support a
+changed pick; 3. \texttt{calculate\_brier}: Evaluates resolved
+predictions against market truth.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{11. Falsifiability and Decisive
+Tests}\label{falsifiability-and-decisive-tests}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Hypothesis
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Test Description
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Success Condition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Falsification Condition
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{H1 (Sycophancy Discovery)} & Expose models to naked
+\texttt{"I\ think\ you\textquotesingle{}re\ wrong"} prompt. & \(\ge 1\)
+vendor exhibits pressure-driven reversal across 10 trials. & Zero
+reversals across all vendors under stress. \\
+\textbf{H2 (Calibration Superiority)} & 20 pre-registered
+high-uncertainty decisions. &
+\(\overline{BS}_{\text{PDP}} < \overline{BS}_{\text{Naive}}\) with
+\(p < 0.05\). & PDP Brier score matches or exceeds naive baseline. \\
+\textbf{H3 (Weight Invariance)} & Verification of hash-chain ledger in
+database. & Zero unlogged updates to \(\vec{w}\) post-elicitation. & Any
+arbitrary weight adjustment. \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{12. Negative Results and Construct-Stress
+Register}\label{negative-results-and-construct-stress-register}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{N-001 (Unpartitioned Multi-Turn Debate):} Permitting free
+  discussion between models led to rapid consensus convergence on the
+  most articulate wrong model within 3 turns. Discarded in favor of
+  isolated parallel elicitation.
+\item
+  \textbf{N-002 (LLM Self-Graded Uncertainty):} Asking models ``how
+  certain are you from 1-10'' resulted in uniform clustering at 8/10.
+  Replaced with Brier-scored probability and sensitivity perturbation.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{13. Threats to Validity and
+Limitations}\label{threats-to-validity-and-limitations}
+
+\subsubsection{13.1 Limitations}\label{limitations}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Sample Size (\(n\)):} Formal decision pre-registrations
+  require real stakes and time to settle; accumulating \(N \ge 30\)
+  cases requires longitudinal discipline.
+\item
+  \textbf{Vendor API Non-Determinism:} Underlying frontier model updates
+  may alter pressure behavior across time.
+\end{itemize}
+
+\subsubsection{13.2 Author Bias}\label{author-bias}
+
+The author designed the protocol and set initial test weights. Mitigated
+by commit-ordered public pre-registration.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{14. Reusable Artifacts and Conformance
+Contracts}\label{reusable-artifacts-and-conformance-contracts}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Protocol Specification:} \texttt{01-SPECIFICATION.md} (v1.3.0)
+\item
+  \textbf{Pre-Registration Instrument:}
+  \texttt{docs/pdp-test-002-preregistration.md}
+\item
+  \textbf{PostgreSQL Schema:} \texttt{docs/pdp-schema.sql}
+\item
+  \textbf{Reference Server Architecture:}
+  \texttt{docs/pdp-architecture.md}
+\item
+  \textbf{Zenodo Archive:}
+  \href{https://doi.org/10.5281/zenodo.XXXXXXXX}{DOI:
+  10.5281/zenodo.XXXXXXXX}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{References}\label{references}
+
+\begin{itemize}
+\tightlist
+\item
+  Verification of forecasts expressed in terms of probability (Brier
+  1950)
+\item
+  Superforecasting: The Art and Science of Prediction (Tetlock and
+  Gardner 2015)
+\item
+  A Mathematical Theory of Communication (Shannon 1948)
+\item
+  Foundations of Computational Interaction (Shallbetter 2026a)
+\item
+  Fundamental: A Platform-Native Relational Field Runtime (Shallbetter
+  2026b)
+\item
+  Polymorphic Decision Protocol (Shallbetter 2026c)
+\end{itemize}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-brier1950verification}
+Brier, Glenn W. 1950. {``Verification of Forecasts Expressed in Terms of
+Probability.''} \emph{Monthly Weather Review} 78 (1): 1--3.
+
+\bibitem[\citeproctext]{ref-shallbetter2026foundations}
+Shallbetter, Zachary. 2026a. {``Foundations of Computational
+Interaction: An Interdisciplinary Research Program.''} \emph{Zenodo
+Preprint}. \url{https://doi.org/10.5281/zenodo.23290488}.
+
+\bibitem[\citeproctext]{ref-shallbetter2026fundamental}
+---------. 2026b. {``Fundamental: A Platform-Native Relational Field
+Runtime.''} Zenodo. \url{https://doi.org/10.5281/zenodo.20989938}.
+
+\bibitem[\citeproctext]{ref-shallbetter2026pdp}
+---------. 2026c. {``Polymorphic Decision Protocol: Specification and
+Epistemic Stress Architecture.''} \emph{Zenodo Software Archive}.
+\url{https://github.com/zachshallbetter/polymorphic-decision-protocol}.
+
+\bibitem[\citeproctext]{ref-shannon1948mathematical}
+Shannon, Claude E. 1948. {``A Mathematical Theory of Communication.''}
+\emph{Bell System Technical Journal} 27: 379--423.
+
+\bibitem[\citeproctext]{ref-tetlock2015superforecasting}
+Tetlock, Philip E., and Dan Gardner. 2015. {``Superforecasting: The Art
+and Science of Prediction.''}
+
+\end{CSLReferences}
+
+\end{document}
