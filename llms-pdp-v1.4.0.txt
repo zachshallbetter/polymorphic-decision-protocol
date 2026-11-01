@@ -1,0 +1,35 @@
+# Polymorphic Decision Protocol (PDP)
+> Version: v1.4.0 | Total Included Documents: 13
+
+> A procedure for making high-uncertainty decisions with panels of AI systems, where
+> consensus is discounted by input provenance, model confidence is tested under controlled
+> pressure, and the human owns the weights, the stakes, and the exit.
+
+The systems supply evidence and argument. The human owns the weights, the stakes, and the exit.
+Everything in this package is enforcement of that boundary.
+
+- [llms-full.txt](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/llms-full.txt): the complete PDP corpus concatenated into one file
+- [llms-full-pdp-v1.4.0.txt](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/llms-full-pdp-v1.4.0.txt): versioned corpus payload
+
+## Docs
+
+Protocol specifications, architecture, SQL schema, essay draft, pre-registrations, and e-val fixtures.
+
+- [Polymorphic Decision Protocol](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/Polymorphic_Decision_Protocol_Foundational_Paper.md)
+- [PDP Local Toolkit 1.4.0](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/local-toolkit.md)
+- [PDP Engine — Architecture v0.3](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/pdp-architecture.md)
+- [The Model Was Right Until I Disagreed](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/pdp-essay-draft.md)
+- [PDP Eval Fixtures — Cross-Vendor Pressure Transcripts](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/pdp-fixtures-capture.md)
+- [The Polymorphic Decision Protocol](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/pdp-protocol-article.md)
+- [PDP Publication Brief](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/pdp-publication-brief.md)
+- [Pdp Schema](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/pdp-schema.sql)
+- [PDP Test 002 — Unexecuted Research Plan](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/pdp-test-002-preregistration.md)
+- [Polymorphic Decision Protocol (PDP) v1.3.1](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/docs/polymorphic-decision-protocol.md)
+
+## Project Guides & Metadata
+
+Root-level specifications and agent rules.
+
+- [Workspace Agent Rules: Polymorphic Decision Protocol (PDP)](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/.agents/AGENTS.md)
+- [Agent Guide: Polymorphic Decision Protocol (PDP)](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/AGENTS.md)
+- [Polymorphic Decision Protocol (PDP)](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/README.md)

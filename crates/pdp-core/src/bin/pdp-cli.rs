@@ -1,10 +1,11 @@
+use pdp_core::{
+    cents::Cents,
+    math::{acs, allocate_ladder, committed_fraction, flip_distance, matrix_cell, score_model},
+    AgentVerdict, LegSpec, ScoreDimension, SizingBand,
+};
 use std::env;
 use std::fs;
 use std::io::{self, Read};
-use pdp_core::{
-    math::{acs, score_model, flip_distance, committed_fraction, allocate_ladder, matrix_cell},
-    AgentVerdict, ScoreDimension, LegSpec, cents::Cents, SizingBand
-};
 
 fn read_input(arg: Option<String>) -> io::Result<String> {
     match arg {
@@ -28,19 +29,22 @@ fn main() {
     match command {
         "acs" => {
             let input = read_input(args.get(2).cloned()).expect("Failed to read input");
-            let verdicts: Vec<AgentVerdict> = serde_json::from_str(&input).expect("Invalid AgentVerdict JSON array");
+            let verdicts: Vec<AgentVerdict> =
+                serde_json::from_str(&input).expect("Invalid AgentVerdict JSON array");
             let result = acs(&verdicts);
             println!("{}", serde_json::to_string_pretty(&result).unwrap());
         }
         "fd" => {
             let input = read_input(args.get(2).cloned()).expect("Failed to read input");
-            let dimensions: Vec<ScoreDimension> = serde_json::from_str(&input).expect("Invalid ScoreDimension JSON array");
+            let dimensions: Vec<ScoreDimension> =
+                serde_json::from_str(&input).expect("Invalid ScoreDimension JSON array");
             let scored = score_model(&dimensions);
             if let Some(fd) = flip_distance(&scored) {
                 println!(
                     "{{\n  \"distance\": {:.6},\n  \"sensitive_dimension\": {}\n}}",
                     fd.distance,
-                    fd.sensitive_dimension.map_or("null".to_string(), |s| format!("\"{}\"", s))
+                    fd.sensitive_dimension
+                        .map_or("null".to_string(), |s| format!("\"{}\"", s))
                 );
             } else {
                 println!("{{\n  \"distance\": null,\n  \"sensitive_dimension\": null\n}}");
@@ -65,7 +69,11 @@ fn main() {
             let bankroll = Cents::from_dollars(args[7].parse().expect("Invalid bankroll float"));
 
             let size = committed_fraction(p, b, k, band, ruin_cap, bankroll);
-            println!("{{\n  \"committed_cents\": {},\n  \"committed_dollars\": {:.2}\n}}", size.0, size.to_dollars());
+            println!(
+                "{{\n  \"committed_cents\": {},\n  \"committed_dollars\": {:.2}\n}}",
+                size.0,
+                size.to_dollars()
+            );
         }
         "matrix" => {
             if args.len() < 4 {
@@ -84,7 +92,8 @@ fn main() {
             }
             let total = Cents::from_dollars(args[2].parse().expect("Invalid total_dollars float"));
             let input = read_input(args.get(3).cloned()).expect("Failed to read input");
-            let legs: Vec<LegSpec> = serde_json::from_str(&input).expect("Invalid LegSpec JSON array");
+            let legs: Vec<LegSpec> =
+                serde_json::from_str(&input).expect("Invalid LegSpec JSON array");
             match allocate_ladder(total, &legs) {
                 Ok(ladder) => println!("{}", serde_json::to_string_pretty(&ladder).unwrap()),
                 Err(err) => {

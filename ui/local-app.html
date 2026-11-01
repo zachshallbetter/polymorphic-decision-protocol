@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+  <title>PDP Local</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172b3a;
+      background: #f2f6f8;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --ink: #172b3a;
+      --muted: #526575;
+      --border: #c8d4dc;
+      --blue: #145b83;
+      --blue-dark: #0d4567;
+      --surface: #fff;
+      --field: #fff;
+    }
+    * { box-sizing: border-box }
+    body { max-width: 940px; margin: 0 auto; padding: clamp(1rem, 4vw, 2.5rem) 1rem; color: var(--ink); background: #f2f6f8 }
+    h1 { margin: 0; color: #123b55; font-size: clamp(2rem, 5vw, 2.6rem); letter-spacing: -.035em; line-height: 1.15 }
+    h2 { margin: 0 0 1rem; font-size: 1.35rem; letter-spacing: -.015em }
+    h3 { margin: 0 0 .5rem; font-size: 1.15rem }
+    p { margin: .5rem 0 1rem }
+    .muted { color: var(--muted) }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start }
+    section, article { margin: 1rem 0; padding: clamp(1rem, 3vw, 1.5rem); color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 2px 8px rgb(20 44 60 / 5%) }
+    label { display: block; margin: .75rem 0 .3rem; color: #263d4d; font-size: .94rem; font-weight: 650 }
+    input, textarea, select {
+      display: block;
+      width: 100%;
+      min-height: 2.8rem;
+      padding: .65rem .75rem;
+      color: #172b3a;
+      background-color: var(--field);
+      border: 1px solid #9eafba;
+      border-radius: 7px;
+      font: inherit;
+      color-scheme: light;
+    }
+    input::placeholder, textarea::placeholder { color: #667987; opacity: 1 }
+    textarea { min-height: 6.5rem; resize: vertical }
+    input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #76bce1; outline-offset: 2px; border-color: var(--blue) }
+    fieldset { min-width: 0; margin: 1rem 0; padding: .75rem 1rem 1rem; border: 1px solid var(--border); border-radius: 8px }
+    legend { padding: 0 .35rem; color: #263d4d; font-weight: 700 }
+    .role-fit-option { display: flex; align-items: flex-start; gap: .65rem; margin: .55rem 0; font-weight: 500; line-height: 1.4 }
+    input[type="radio"], input[type="checkbox"] { display: inline-block; flex: 0 0 auto; width: 1.1rem; min-height: 1.1rem; height: 1.1rem; margin: .1rem 0 0; padding: 0; accent-color: var(--blue) }
+    button { min-height: 2.7rem; margin: .55rem .4rem .2rem 0; padding: .6rem .95rem; color: #fff; background: var(--blue); border: 1px solid var(--blue); border-radius: 7px; font: inherit; font-weight: 650; cursor: pointer }
+    button:hover { background: var(--blue-dark); border-color: var(--blue-dark) }
+    button:disabled { color: #526575; background: #e4eaee; border-color: #c8d4dc; cursor: not-allowed }
+    details { margin: .8rem 0; padding: .75rem; border: 1px solid #d5dfe5; border-radius: 8px }
+    summary { color: #174e70; font-weight: 650; cursor: pointer }
+    pre { overflow: auto; max-height: 24rem; padding: .85rem; color: #172b3a; background: #f2f6f8; border: 1px solid #d5dfe5; border-radius: 7px; white-space: pre-wrap; overflow-wrap: anywhere }
+    .notice { margin: 1.25rem 0; padding: .8rem 1rem; color: #633b12; background: #fff5e8; border: 1px solid #ebc99f; border-left: 5px solid #a85d13; border-radius: 7px }
+    .model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .75rem }
+    .model-card { margin: 0; padding: .9rem; border: 1px solid #d5dfe5; border-radius: 8px; background: #fbfdfe; box-shadow: none }
+    .model-card h3 { margin-bottom: .25rem }
+    .model-card p { margin: .35rem 0; font-size: .92rem }
+    .model-status { display: inline-block; padding: .12rem .5rem; border-radius: 999px; color: #174e36; background: #e7f5ec; font-size: .8rem; font-weight: 700 }
+    .model-status.limited { color: #704912; background: #fff1d6 }
+    .model-status.failed { color: #7a2929; background: #fae8e8 }
+    .tab-list { display: flex; gap: .35rem; margin: 1rem 0; padding: .3rem; background: #e5edf1; border-radius: 9px }
+    .tab-list button { flex: 1; margin: 0; color: var(--muted); background: transparent; border-color: transparent }
+    .tab-list button:hover { color: var(--ink); background: #f6f9fa; border-color: transparent }
+    .tab-list button[aria-selected="true"] { color: #fff; background: var(--blue); border-color: var(--blue) }
+    .tab-panel[hidden] { display: none }
+    .model-note { margin: 1rem 0 0; padding: .7rem .85rem; background: #f2f6f8; border-radius: 7px }
+    @media (max-width: 680px) { .grid { grid-template-columns: 1fr; gap: .25rem } }
+  </style>
+</head>
+<body>
+  <h1>PDP Local</h1>
+  <p class="muted">Local decision records using protocol v1.3.1. Human gates remain manual.</p>
+  <p class="notice" role="status">Local research toolkit · provider calls and search require per-call approval. G1, G2, and G3 remain human decisions; the app does not execute commitments.</p>
+  <nav class="tab-list" role="tablist" aria-label="PDP Local sections">
+    <button id="decisions-tab" type="button" role="tab" aria-selected="true" aria-controls="decisions-panel" tabindex="0">Decisions</button>
+    <button id="models-tab" type="button" role="tab" aria-selected="false" aria-controls="models-panel" tabindex="-1">Models</button>
+    <button id="settings-tab" type="button" role="tab" aria-selected="false" aria-controls="settings-panel" tabindex="-1">Settings</button>
+  </nav>
+  <div id="decisions-panel" class="tab-panel" role="tabpanel" aria-labelledby="decisions-tab">
+    <section>
+      <h2>New decision</h2>
+      <form id="create">
+        <label for="title">Title</label><input id="title" required maxlength="160">
+        <label for="question">Decision question</label><textarea id="question" required maxlength="4000"></textarea>
+        <div class="grid"><div><label for="domain">Domain</label><input id="domain" required maxlength="120"></div><div><label for="options">Options (one per line)</label><textarea id="options" required></textarea></div></div>
+        <label for="actor">Human actor</label><input id="actor" required maxlength="120" value="local-human">
+        <fieldset><legend>Role fit</legend><label class="role-fit-option"><input type="radio" name="fit" value="unsupported" checked><span>Unsupported for conformant run</span></label><label class="role-fit-option"><input type="radio" name="fit" value="supported"><span>Map each protocol role</span></label></fieldset>
+        <div id="roles" hidden>
+          <label for="quant">Quant lane</label><input id="quant" maxlength="500">
+          <label for="market">Market lane</label><input id="market" maxlength="500">
+          <label for="structural">Structural lane</label><input id="structural" maxlength="500">
+          <label for="contrarian">Contrarian lane</label><input id="contrarian" maxlength="500">
+        </div>
+        <button>Create draft</button>
+      </form>
+    </section>
+    <section><h2>Decision records</h2><div id="records" aria-live="polite"></div></section>
+  </div>
+  <div id="models-panel" class="tab-panel" role="tabpanel" aria-labelledby="models-tab" hidden>
+    <section aria-labelledby="models-heading">
+      <h2 id="models-heading">Current comparison set</h2>
+      <p class="muted">Provider checks and local smoke tests are not full PDP panel runs.</p>
+      <div class="model-grid">
+        <article class="model-card">
+          <h3>OpenAI · <code>gpt-6-luna</code></h3>
+          <p><span class="model-status">Smoke test passed</span></p>
+          <p>Hosted API · 16 input / 11 output tokens · est. $0.000007.</p>
+          <p class="muted">Connection check only; no decision data was sent.</p>
+        </article>
+        <article class="model-card">
+          <h3>Liquid AI · <code>LFM3-1.7B</code></h3>
+          <p><span class="model-status">Local smoke test passed</span></p>
+          <p>Ollama tag <code>lfm3:1.7b</code> · 1.7 GB · local-only inference.</p>
+          <p class="muted">Standalone comparison; not connected to PDP runs.</p>
+        </article>
+        <article class="model-card">
+          <h3>BonzAI Web · Qwen 3.5 4B Vision Q4</h3>
+          <p><span class="model-status failed">Not verified</span></p>
+          <p>Browser-based local comparison · smoke prompt returned no visible answer.</p>
+          <p class="muted">Do not treat as a working PDP panel model yet.</p>
+        </article>
+      </div>
+      <p class="model-note">A pinned panel can call OpenAI, Anthropic, or local Ollama one vendor-role at a time. Any vendor ID can be represented; vendors without a supported connection use manual prompt and transcript import. Google is paused. No fallback occurs.</p>
+      <details>
+        <summary>Paused and manual-only providers</summary>
+        <p><strong>Google · <code>gemini-3.1-flash-lite</code></strong> · Latest attempt returned HTTP 429; an earlier smoke test passed. Google is paused in the current comparison set.</p>
+        <p><strong>Anthropic</strong> · Manual transcript entry only; no API adapter or connection test is available.</p>
+      </details>
+    </section>
+  </div>
+  <div id="settings-panel" class="tab-panel" role="tabpanel" aria-labelledby="settings-tab" hidden>
+    <section>
+      <h2>Provider settings</h2>
+      <p>API keys are stored in macOS Keychain and are not saved in decision records.</p>
+      <div class="credential-card" data-provider="openai">
+        <h3>OpenAI</h3>
+        <p id="openai-status" class="muted" aria-live="polite">Saved key is read only when you run the smoke test. Opening the app does not check Keychain.</p>
+        <details>
+          <summary>Set key · first-time setup only</summary>
+          <form class="credential-form">
+            <label for="openai-key">OpenAI API key</label>
+            <input id="openai-key" type="password" required minlength="20" maxlength="512" autocomplete="new-password" autocapitalize="off" spellcheck="false">
+            <button type="submit">Save to Keychain</button>
+          </form>
+        </details>
+        <details>
+          <summary>Connection smoke test</summary>
+          <p class="call-preview">Fixed prompt: “Reply with exactly: PDP provider smoke test passed.” Model: <code>gpt-6-luna</code>. Output cap: 24 tokens. Estimated maximum: under $0.001.</p>
+          <button type="button" class="provider-test-button">Run OpenAI smoke test</button>
+          <p id="openai-test-result" aria-live="polite"></p>
+        </details>
+      </div>
+      <div class="credential-card" data-provider="anthropic">
+        <h3>Anthropic</h3><p id="anthropic-status" class="muted" aria-live="polite">Key status is not read on page load.</p>
+        <details><summary>Set Anthropic API key</summary><form class="credential-form"><label for="anthropic-key">Anthropic API key</label><input id="anthropic-key" type="password" required minlength="20" maxlength="512" autocomplete="new-password" autocapitalize="off" spellcheck="false"><button type="submit">Save to Keychain</button></form></details>
+      </div>
+      <div class="credential-card" data-provider="brave">
+        <h3>Brave Search</h3><p id="brave-status" class="muted" aria-live="polite">Key status is not read on page load. Search results are transient and not forwarded to models.</p>
+        <details><summary>Set Brave Search API key</summary><form class="credential-form"><label for="brave-key">Brave Search API key</label><input id="brave-key" type="password" required minlength="20" maxlength="512" autocomplete="new-password" autocapitalize="off" spellcheck="false"><button type="submit">Save to Keychain</button></form></details>
+        <p class="muted">Use only a plan whose terms permit this app’s transient display. Search-result retention and reuse stay disabled.</p>
+      </div>
+      <details>
+        <summary>Paused provider · Google Gemini</summary>
+        <div class="credential-card" data-provider="google" data-paused="true">
+          <p id="google-status" class="muted" aria-live="polite">Paused · existing key remains untouched. No Keychain lookup or provider call occurs while paused.</p>
+          <p class="call-preview">Latest attempt returned HTTP 429. The Google key, if present, remains in Keychain but is unused while this provider is paused.</p>
+          <button type="button" class="provider-test-button" disabled>Paused · smoke test disabled</button>
+          <p id="google-test-result" aria-live="polite"></p>
+        </div>
+        <p class="muted">Google's response did not identify the specific rate or quota limit. Check <a href="https://ai.google.dev/gemini-api/docs/rate-limits" target="_blank" rel="noreferrer">Google AI Studio limits</a> before any future attempt.</p>
+      </details>
+      <details>
+        <summary>Pricing references</summary>
+        <p class="muted">Rates checked 2026-10-31: GPT-6 Luna $0.10 / $0.50 per million input/output tokens; Gemini 3.1 Flash-Lite $0.25 / $1.50.</p>
+        <a href="https://developers.openai.com/api/docs/pricing" target="_blank" rel="noreferrer">OpenAI pricing</a> ·
+        <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer">Gemini pricing</a>
+      </details>
+    </section>
+  </div>
+  <script src="/local-app.js" defer></script>
+</body>
+</html>

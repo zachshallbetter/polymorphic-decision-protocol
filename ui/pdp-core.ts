@@ -1,4 +1,4 @@
-export type Vendor = 'Anthropic' | 'OpenAI' | 'Google';
+export type Vendor = string;
 export type EvidenceClass = 'Quant' | 'Market' | 'Structural' | 'Contrarian';
 
 export class Cents {
@@ -102,6 +102,16 @@ export interface InvalidationCondition {
   observable_inputs: string[];
   exit_action: string;
   status: 'Armed' | 'Triggered' | 'Expired';
+}
+
+function compareCodePoints(left: string, right: string): number {
+  const leftPoints = Array.from(left, character => character.codePointAt(0) as number);
+  const rightPoints = Array.from(right, character => character.codePointAt(0) as number);
+  const limit = Math.min(leftPoints.length, rightPoints.length);
+  for (let index = 0; index < limit; index += 1) {
+    if (leftPoints[index] !== rightPoints[index]) return leftPoints[index] - rightPoints[index];
+  }
+  return leftPoints.length - rightPoints.length;
 }
 
 export interface KellyInputs {
@@ -212,10 +222,34 @@ export class SingleEventBoundViolatedError extends Error {
 
 // --- Hashing and Cryptography ---
 
-export async function calculateHash(value: any): Promise<string> {
-  const serialized = JSON.stringify(value);
+export async function calculateHash(value: InvalidationCondition): Promise<string> {
+  const fields: [string, string][] = [
+    ['condition_text', value.condition_text],
+    ['exit_action', value.exit_action],
+    ['status', value.status],
+    ...[...value.observable_inputs].sort(compareCodePoints).map(input => ['observable_input', input] as [string, string]),
+  ];
   const encoder = new TextEncoder();
-  const data = encoder.encode(serialized);
+  const chunks: Uint8Array[] = [];
+  const frame = (text: string) => {
+    const bytes = encoder.encode(text);
+    const prefix = new Uint8Array(8);
+    new DataView(prefix.buffer).setBigUint64(0, BigInt(bytes.length), false);
+    chunks.push(prefix, bytes);
+  };
+  frame('pdp.invalidation.v1');
+  fields.sort(([nameA, valueA], [nameB, valueB]) => compareCodePoints(nameA, nameB) || compareCodePoints(valueA, valueB));
+  for (const [name, fieldValue] of fields) {
+    frame(name);
+    frame(fieldValue);
+  }
+  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const data = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    data.set(chunk, offset);
+    offset += chunk.length;
+  }
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -232,19 +266,13 @@ export function acs(agents: AgentVerdict[]): Acs {
     };
   }
 
-  const pickCounts: Record<string, number> = {};
+  const pickCounts = new Map<string, number>();
   for (const agent of agents) {
-    pickCounts[agent.pick] = (pickCounts[agent.pick] || 0) + 1;
+    pickCounts.set(agent.pick, (pickCounts.get(agent.pick) || 0) + 1);
   }
 
-  let modalPick = '';
-  let maxCount = 0;
-  for (const pick in pickCounts) {
-    if (pickCounts[pick] > maxCount) {
-      maxCount = pickCounts[pick];
-      modalPick = pick;
-    }
-  }
+  const modalPick = [...pickCounts.entries()]
+    .sort(([pickA, countA], [pickB, countB]) => countB - countA || compareCodePoints(pickA, pickB))[0]?.[0] || '';
 
   const agreeingAgents = agents.filter(a => a.pick === modalPick);
   const agreeingIds = agreeingAgents.map(a => a.agent_id);
@@ -291,7 +319,7 @@ export function scoreModel(dimensions: ScoreDimension[]): ScoredModel {
     }
   }
 
-  for (const option of options) {
+  for (const option of [...options].sort()) {
     let totalScore = 0.0;
     for (const dim of dimensions) {
       const score = dim.scores[option] !== undefined ? dim.scores[option] : 0.0;

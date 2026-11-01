@@ -11,8 +11,7 @@ authors:
   - family-names: Shallbetter
     given-names: Zachary
     orcid: "https://orcid.org/0009-0009-9450-3429"
-version: "1.3.2"
-date-released: "2026-10-30"
+version: "1.4.0"
 license: MIT
 repository-code: "https://github.com/zachshallbetter/polymorphic-decision-protocol"
 url: "https://polymorphic-decision-protocol.vercel.app"
@@ -23,4 +22,13 @@ keywords:
   - calibration
   - human-in-the-loop
   - panel methods
-doi: "10.5281/zenodo.23797875"
+abstract: >-
+  PDP Local Toolkit provides a local, human-gated workflow for the Polymorphic
+  Decision Protocol normative candidate, including encrypted records, approved
+  model calls, search, stress testing, commitment review, monitoring, settlement,
+  and audit. It does not execute consequential actions or establish empirical
+  validity.
+identifiers:
+  - type: url
+    value: "https://github.com/zachshallbetter/polymorphic-decision-protocol/releases/tag/v1.4.0"
+    description: Software repository release 1.4.0; protocol specification baseline 1.3.1.

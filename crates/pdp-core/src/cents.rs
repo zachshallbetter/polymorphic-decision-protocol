@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
-use std::ops::{Add, Sub, AddAssign, SubAssign, Mul, Div};
+use serde::{Deserialize, Serialize};
+use std::ops::{Add, AddAssign, Div, Mul, Sub, SubAssign};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(transparent)]

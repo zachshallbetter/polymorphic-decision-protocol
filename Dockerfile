@@ -33,8 +33,5 @@ WORKDIR /app
 # (Ready to copy other crates like pdp-server as they are implemented)
 COPY --from=builder /app/target/release/ /app/bin/
 
-ENV PORT=8080
-EXPOSE 8080
-
-# Keep container running or execute pdp-server when implemented
-CMD ["/app/bin/pdp-core"]
+# The current package provides a CLI, not a server.
+ENTRYPOINT ["/app/bin/pdp-cli"]

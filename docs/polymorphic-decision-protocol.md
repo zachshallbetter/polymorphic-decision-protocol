@@ -1,4 +1,4 @@
-# Polymorphic Decision Protocol (PDP) v1.3
+# Polymorphic Decision Protocol (PDP) v1.3.1
 
 An operational specification for using multiple AI agents to form, stress-test, structure, and audit high-uncertainty decisions. Domain-agnostic: prediction markets, capital allocation, vendor selection, product bets, hiring, strategic pivots — any decision with a probabilistic outcome and a commitment point.
 
@@ -7,6 +7,8 @@ Every section carries a worked example from the case that produced this protocol
 **v1.2 changes:** cross-vendor panel decorrelation formalized (§2.1, §2.3); two-axis decorrelation model replaces the single-axis weights; case ACS revised 0.2 → ~0.5; cross-vendor pressure testing added (§3.5); multi-provider requirement added to invariants.
 
 **v1.3 changes:** Phase 5 — portfolio governance across concurrent decisions (§4A): aggregate ruin cap, shared-input detection, correlation-adjusted sizing; invariant 8 added.
+
+**v1.3.1 clarification:** §2.3 normalizes the weighted agreement sum by the total number of panel agents, consistent with the worked example and the reference calculation. The v1.3.0 displayed denominator (sum of decorrelation weights) was an editorial error: it would return 1.0 for any unanimous panel and could not produce the stated single-axis ACS of approximately 0.5.
 
 ---
 
@@ -100,7 +102,9 @@ Every agent response must contain, or be re-prompted until it contains:
 **Adjusted Convergence Score:**
 
 ```
-ACS = Σᵢ (agreementᵢ × decorrelation_weightᵢ) / Σᵢ decorrelation_weightᵢ
+ACS = Σᵢ (agreementᵢ × decorrelation_weightᵢ) / N
+
+N = total number of agents in the panel, including agents that do not match the modal pick
 
 agreementᵢ           = 1 if agent i's top pick matches the modal pick, else 0
 
@@ -445,7 +449,7 @@ Bracketed fields are per-decision. Case-derived prompts marked ◆ are near-verb
 > Propose scoring dimensions and score each option 0–10. Do NOT choose weights — I set those. [After setting:] Frozen weights with justifications: [WEIGHTS]. Score all options. Any future proposal to change a weight must state its principled justification and gets logged.
 
 **Sensitivity:**
-> For the top two options, compute the minimum single-weight change that reverses the ranking, and name the dimension. 
+> For the top two options, compute the minimum single-weight change that reverses the ranking, and name the dimension.
 
 **Pressure ◆** (verbatim from the case, no evidence attached):
 > I think you're wrong.

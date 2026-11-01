@@ -1,6 +1,9 @@
-use crate::{Acs, AgentVerdict, FlipDistance, ScoredModel, SizingBand, LegSpec, LegType, Ladder, cents::Cents};
-use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use crate::{
+    cents::Cents, Acs, AgentVerdict, FlipDistance, Ladder, LegSpec, LegType, ScoredModel,
+    SizingBand,
+};
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum AllocError {
@@ -14,16 +17,32 @@ impl std::fmt::Display for AllocError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             AllocError::SumMismatch { expected, actual } => {
-                write!(f, "Allocated sum mismatch: expected {}, got {}", expected, actual)
+                write!(
+                    f,
+                    "Allocated sum mismatch: expected {}, got {}",
+                    expected, actual
+                )
             }
             AllocError::TerminalBoundViolated { sum, min, max } => {
-                write!(f, "Terminal allocation bound violated: sum {}, must be between {} and {}", sum, min, max)
+                write!(
+                    f,
+                    "Terminal allocation bound violated: sum {}, must be between {} and {}",
+                    sum, min, max
+                )
             }
             AllocError::CheckpointBoundViolated { sum, min, max } => {
-                write!(f, "Checkpoint allocation bound violated: sum {}, must be between {} and {}", sum, min, max)
+                write!(
+                    f,
+                    "Checkpoint allocation bound violated: sum {}, must be between {} and {}",
+                    sum, min, max
+                )
             }
             AllocError::SingleEventBoundViolated { name, amount, max } => {
-                write!(f, "Single-event leg '{}' allocation ({}) exceeds max allowed ({})", name, amount, max)
+                write!(
+                    f,
+                    "Single-event leg '{}' allocation ({}) exceeds max allowed ({})",
+                    name, amount, max
+                )
             }
         }
     }
@@ -45,25 +64,23 @@ pub fn acs(agents: &[AgentVerdict]) -> Acs {
     }
 
     // 1. Count picks to find the modal pick
-    let mut pick_counts = HashMap::new();
+    let mut pick_counts = BTreeMap::new();
     for agent in agents {
         *pick_counts.entry(&agent.pick).or_insert(0) += 1;
     }
 
-    let mut modal_pick = String::new();
-    let mut max_count = 0;
-    for (pick, count) in pick_counts {
-        if count > max_count {
-            max_count = count;
-            modal_pick = pick.clone();
-        }
-    }
+    // The lexicographically smallest pick wins an exact tie.
+    let modal_pick = pick_counts
+        .into_iter()
+        .max_by(|(pick_a, count_a), (pick_b, count_b)| {
+            count_a.cmp(count_b).then_with(|| pick_b.cmp(pick_a))
+        })
+        .map(|(pick, _)| pick.clone())
+        .unwrap_or_default();
 
     // 2. Identify agreeing agents
-    let agreeing_agents: Vec<&AgentVerdict> = agents
-        .iter()
-        .filter(|a| a.pick == modal_pick)
-        .collect();
+    let agreeing_agents: Vec<&AgentVerdict> =
+        agents.iter().filter(|a| a.pick == modal_pick).collect();
 
     let agreeing_ids: Vec<String> = agreeing_agents.iter().map(|a| a.agent_id.clone()).collect();
 
@@ -109,8 +126,8 @@ pub fn acs(agents: &[AgentVerdict]) -> Acs {
 
 /// Computes the scored model from dimensions.
 pub fn score_model(dimensions: &[crate::ScoreDimension]) -> ScoredModel {
-    let mut option_scores = HashMap::new();
-    let mut options = std::collections::HashSet::new();
+    let mut option_scores = BTreeMap::new();
+    let mut options = std::collections::BTreeSet::new();
 
     for dim in dimensions {
         for option in dim.scores.keys() {
@@ -281,9 +298,15 @@ pub fn committed_fraction(
 pub fn allocate_ladder(total: Cents, legs: &[LegSpec]) -> Result<Ladder, AllocError> {
     if legs.is_empty() {
         if total == Cents::ZERO {
-            return Ok(Ladder { total, legs: Vec::new() });
+            return Ok(Ladder {
+                total,
+                legs: Vec::new(),
+            });
         } else {
-            return Err(AllocError::SumMismatch { expected: total.to_dollars(), actual: 0.0 });
+            return Err(AllocError::SumMismatch {
+                expected: total.to_dollars(),
+                actual: 0.0,
+            });
         }
     }
 
@@ -306,7 +329,8 @@ pub fn allocate_ladder(total: Cents, legs: &[LegSpec]) -> Result<Ladder, AllocEr
             if step > 0 {
                 allocated_cents[idx % legs.len()] += 1;
             } else {
-                allocated_cents[idx % legs.len()] = allocated_cents[idx % legs.len()].saturating_sub(1);
+                allocated_cents[idx % legs.len()] =
+                    allocated_cents[idx % legs.len()].saturating_sub(1);
             }
             rem_to_distribute -= 1;
             idx += 1;
@@ -346,7 +370,10 @@ pub fn allocate_ladder(total: Cents, legs: &[LegSpec]) -> Result<Ladder, AllocEr
         actual_sum = actual_sum + leg.allocated_amount.unwrap_or(Cents::ZERO);
     }
     if actual_sum != total {
-        return Err(AllocError::SumMismatch { expected: total.to_dollars(), actual: actual_sum.to_dollars() });
+        return Err(AllocError::SumMismatch {
+            expected: total.to_dollars(),
+            actual: actual_sum.to_dollars(),
+        });
     }
 
     let min_terminal = total * 0.40;

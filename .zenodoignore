@@ -1,0 +1,22 @@
+# Exclude internal material from automatic repository snapshots. The curated
+# software package is assembled from its separate, reviewed manifest.
+AGENTS.md
+.agents/
+llms*.txt
+**/llms*.txt
+docs/*Foundational_Paper*
+docs/polymorphic-decision-protocol.md
+docs/pdp-architecture.md
+docs/pdp-essay-draft.md
+docs/pdp-protocol-article.md
+docs/pdp-publication-brief.md
+docs/pdp-fixtures-capture.md
+research/
+publication-package/
+release-artifacts/
+target/
+node_modules/
+.pytest_cache/
+__pycache__/
+.DS_Store
+.env*

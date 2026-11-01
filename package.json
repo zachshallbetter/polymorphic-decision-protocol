@@ -1,11 +1,13 @@
 {
   "name": "polymorphic-decision-protocol",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "test:rust": "cargo test",
     "test:ts": "node --experimental-strip-types ui/pdp-core.test.ts",
-    "test": "npm run test:rust && npm run test:ts"
+    "test:ui": "node --check ui/local-app.js",
+    "test": "npm run test:rust && npm run test:ts && npm run test:ui",
+    "start:local": "cargo run -p pdp-local"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

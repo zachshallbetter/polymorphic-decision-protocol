@@ -22,3 +22,14 @@ Thumbs.db
 .env.*
 !.env.example
 .env*.local
+
+# Local research and curation work is published only through reviewed manifests.
+/research/
+/publication-package/
+/release-artifacts/*
+!/release-artifacts/prepare-packages.py
+!/release-artifacts/manifests/
+release-artifacts/manifests/*
+!/release-artifacts/manifests/software-v1.4.0.csv
+!/release-artifacts/software-readme.md
+!/release-artifacts/software-release-notes.md

@@ -1,27 +1,60 @@
 pub mod cents;
 pub mod math;
+pub mod workflow;
 
-use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
 use cents::Cents;
-use sha2::{Sha256, Digest};
+use serde::{Deserialize, Deserializer, Serialize};
+use std::collections::BTreeMap;
 
-pub fn calculate_hash<T: serde::Serialize>(value: &T) -> Result<String, serde_json::Error> {
-    let serialized = serde_json::to_string(value)?;
-    let mut hasher = Sha256::new();
-    hasher.update(serialized.as_bytes());
-    let hash_result = hasher.finalize();
-    Ok(format!("{:x}", hash_result))
+pub use workflow::{CanonicalRecord, WorkflowEvent};
+
+pub fn calculate_hash<T: CanonicalRecord>(value: &T) -> String {
+    value.content_hash()
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Vendor {
-    Anthropic,
-    OpenAI,
-    Google,
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
+#[serde(transparent)]
+pub struct Vendor(String);
+
+impl Vendor {
+    pub fn new(value: impl Into<String>) -> Result<Self, &'static str> {
+        let value = value.into();
+        let valid = !value.is_empty()
+            && value.len() <= 64
+            && value.as_bytes()[0].is_ascii_lowercase()
+            && value.bytes().all(|byte| {
+                byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_' || byte == b'-'
+            })
+            && !value.ends_with('_')
+            && !value.ends_with('-')
+            && !value.contains("__")
+            && !value.contains("--")
+            && !value.contains("_-")
+            && !value.contains("-_");
+        if valid {
+            Ok(Self(value))
+        } else {
+            Err("vendor ID must be a lowercase canonical identifier")
+        }
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+impl<'de> Deserialize<'de> for Vendor {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value = String::deserialize(deserializer)?;
+        Self::new(value).map_err(serde::de::Error::custom)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum EvidenceClass {
     Quant,
     Market,
@@ -58,14 +91,14 @@ pub struct FlipDistance {
 pub struct ScoreDimension {
     pub name: String,
     pub weight: f64,
-    pub scores: HashMap<String, f64>, // option_name -> score (0.0 to 10.0)
+    pub scores: BTreeMap<String, f64>, // option_name -> score (0.0 to 10.0)
     pub justification: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ScoredModel {
     pub dimensions: Vec<ScoreDimension>,
-    pub option_scores: HashMap<String, f64>, // option_name -> overall weighted score
+    pub option_scores: BTreeMap<String, f64>, // option_name -> overall weighted score
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

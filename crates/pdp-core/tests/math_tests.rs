@@ -1,9 +1,12 @@
 use pdp_core::{
-    math::{acs, committed_fraction, flip_distance, matrix_cell, score_model, allocate_ladder, AllocError},
-    AgentVerdict, EvidenceClass, LegSpec, LegType, ScoreDimension, SizingBand, Vendor,
     cents::Cents,
+    math::{
+        acs, allocate_ladder, committed_fraction, flip_distance, matrix_cell, score_model,
+        AllocError,
+    },
+    AgentVerdict, EvidenceClass, LegSpec, LegType, ScoreDimension, SizingBand, Vendor,
 };
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[test]
 fn test_acs_unanimous_cross_vendor_same_evidence() {
@@ -11,7 +14,7 @@ fn test_acs_unanimous_cross_vendor_same_evidence() {
     let agents = vec![
         AgentVerdict {
             agent_id: "claude-1".to_string(),
-            vendor: Vendor::Anthropic,
+            vendor: Vendor::new("anthropic").unwrap(),
             evidence_class: EvidenceClass::Quant,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -21,7 +24,7 @@ fn test_acs_unanimous_cross_vendor_same_evidence() {
         },
         AgentVerdict {
             agent_id: "gemini-1".to_string(),
-            vendor: Vendor::Google,
+            vendor: Vendor::new("google").unwrap(),
             evidence_class: EvidenceClass::Quant,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -31,7 +34,7 @@ fn test_acs_unanimous_cross_vendor_same_evidence() {
         },
         AgentVerdict {
             agent_id: "gpt-1".to_string(),
-            vendor: Vendor::OpenAI,
+            vendor: Vendor::new("open_ai").unwrap(),
             evidence_class: EvidenceClass::Quant,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -47,12 +50,39 @@ fn test_acs_unanimous_cross_vendor_same_evidence() {
 }
 
 #[test]
+fn acs_exact_pick_tie_uses_lexicographically_smallest_pick() {
+    let result = acs(&[
+        AgentVerdict {
+            agent_id: "a".into(),
+            vendor: Vendor::new("anthropic").unwrap(),
+            evidence_class: EvidenceClass::Quant,
+            pick: "B".into(),
+            stated_p: 0.5,
+            alternatives: vec![],
+            load_bearing_facts: vec![],
+            searched: "".into(),
+        },
+        AgentVerdict {
+            agent_id: "b".into(),
+            vendor: Vendor::new("open_ai").unwrap(),
+            evidence_class: EvidenceClass::Market,
+            pick: "A".into(),
+            stated_p: 0.5,
+            alternatives: vec![],
+            load_bearing_facts: vec![],
+            searched: "".into(),
+        },
+    ]);
+    assert_eq!(result.agreeing_agents, vec!["b".to_string()]);
+}
+
+#[test]
 fn test_acs_unanimous_cross_vendor_cross_evidence() {
     // 3 agents, different vendors, different evidence classes
     let agents = vec![
         AgentVerdict {
             agent_id: "claude-1".to_string(),
-            vendor: Vendor::Anthropic,
+            vendor: Vendor::new("anthropic").unwrap(),
             evidence_class: EvidenceClass::Quant,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -62,7 +92,7 @@ fn test_acs_unanimous_cross_vendor_cross_evidence() {
         },
         AgentVerdict {
             agent_id: "gemini-1".to_string(),
-            vendor: Vendor::Google,
+            vendor: Vendor::new("google").unwrap(),
             evidence_class: EvidenceClass::Market,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -72,7 +102,7 @@ fn test_acs_unanimous_cross_vendor_cross_evidence() {
         },
         AgentVerdict {
             agent_id: "gpt-1".to_string(),
-            vendor: Vendor::OpenAI,
+            vendor: Vendor::new("open_ai").unwrap(),
             evidence_class: EvidenceClass::Structural,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -92,7 +122,7 @@ fn test_acs_one_analyst_n_hats() {
     let agents = vec![
         AgentVerdict {
             agent_id: "gpt-1".to_string(),
-            vendor: Vendor::OpenAI,
+            vendor: Vendor::new("open_ai").unwrap(),
             evidence_class: EvidenceClass::Quant,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -102,7 +132,7 @@ fn test_acs_one_analyst_n_hats() {
         },
         AgentVerdict {
             agent_id: "gpt-2".to_string(),
-            vendor: Vendor::OpenAI,
+            vendor: Vendor::new("open_ai").unwrap(),
             evidence_class: EvidenceClass::Quant,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -112,7 +142,7 @@ fn test_acs_one_analyst_n_hats() {
         },
         AgentVerdict {
             agent_id: "gpt-3".to_string(),
-            vendor: Vendor::OpenAI,
+            vendor: Vendor::new("open_ai").unwrap(),
             evidence_class: EvidenceClass::Quant,
             pick: "Spain".to_string(),
             stated_p: 0.20,
@@ -129,35 +159,35 @@ fn test_acs_one_analyst_n_hats() {
 #[test]
 fn test_flip_distance_spain_france() {
     // Spain/France World Cup case
-    let mut scores1 = HashMap::new();
+    let mut scores1 = BTreeMap::new();
     scores1.insert("Spain".to_string(), 8.0);
     scores1.insert("France".to_string(), 10.0);
 
-    let mut scores2 = HashMap::new();
+    let mut scores2 = BTreeMap::new();
     scores2.insert("Spain".to_string(), 9.0);
     scores2.insert("France".to_string(), 8.0);
 
-    let mut scores3 = HashMap::new();
+    let mut scores3 = BTreeMap::new();
     scores3.insert("Spain".to_string(), 10.0);
     scores3.insert("France".to_string(), 7.0);
 
-    let mut scores4 = HashMap::new();
+    let mut scores4 = BTreeMap::new();
     scores4.insert("Spain".to_string(), 9.0);
     scores4.insert("France".to_string(), 8.0);
 
-    let mut scores5 = HashMap::new();
+    let mut scores5 = BTreeMap::new();
     scores5.insert("Spain".to_string(), 5.0);
     scores5.insert("France".to_string(), 8.0);
 
-    let mut scores6 = HashMap::new();
+    let mut scores6 = BTreeMap::new();
     scores6.insert("Spain".to_string(), 10.0);
     scores6.insert("France".to_string(), 8.0);
 
-    let mut scores7 = HashMap::new();
+    let mut scores7 = BTreeMap::new();
     scores7.insert("Spain".to_string(), 9.0);
     scores7.insert("France".to_string(), 6.0);
 
-    let mut scores8 = HashMap::new();
+    let mut scores8 = BTreeMap::new();
     scores8.insert("Spain".to_string(), 7.0);
     scores8.insert("France".to_string(), 9.0);
 
@@ -213,13 +243,13 @@ fn test_flip_distance_spain_france() {
     ];
 
     let model = score_model(&dimensions);
-    
+
     // Spain overall: 8.65, France overall: 7.95
     assert!((model.option_scores.get("Spain").unwrap() - 8.65).abs() < 1e-9);
     assert!((model.option_scores.get("France").unwrap() - 7.95).abs() < 1e-9);
 
     let fd = flip_distance(&model).unwrap();
-    
+
     // Minimum delta should be in "WC Pedigree", which is ~0.17027
     assert_eq!(fd.sensitive_dimension.as_deref(), Some("WC Pedigree"));
     assert!((fd.distance - 0.17027027).abs() < 1e-6);
@@ -292,9 +322,18 @@ fn test_allocate_ladder_success() {
 
     let ladder = allocate_ladder(total, &legs).unwrap();
     assert_eq!(ladder.total, Cents::from_dollars(10.00));
-    assert_eq!(ladder.legs[0].allocated_amount, Some(Cents::from_dollars(5.00)));
-    assert_eq!(ladder.legs[1].allocated_amount, Some(Cents::from_dollars(4.00)));
-    assert_eq!(ladder.legs[2].allocated_amount, Some(Cents::from_dollars(1.00)));
+    assert_eq!(
+        ladder.legs[0].allocated_amount,
+        Some(Cents::from_dollars(5.00))
+    );
+    assert_eq!(
+        ladder.legs[1].allocated_amount,
+        Some(Cents::from_dollars(4.00))
+    );
+    assert_eq!(
+        ladder.legs[2].allocated_amount,
+        Some(Cents::from_dollars(1.00))
+    );
 }
 
 #[test]
@@ -333,7 +372,7 @@ fn test_allocate_ladder_rounding() {
 #[test]
 fn test_allocate_ladder_errors() {
     let total = Cents::from_dollars(10.00);
-    
+
     // 1. Single-event leg > 10% of total
     let legs1 = vec![
         LegSpec {
@@ -393,13 +432,17 @@ fn test_content_hashing() {
         status: "Armed".to_string(),
     };
     let condition2 = condition1.clone();
-    
-    let hash1 = calculate_hash(&condition1).unwrap();
-    let hash2 = calculate_hash(&condition2).unwrap();
+
+    let hash1 = calculate_hash(&condition1);
+    let hash2 = calculate_hash(&condition2);
+    assert_eq!(
+        hash1,
+        "3d279c7d0aa1562a909480250a160abc1d60a4155f635ff0804d5618da5786be"
+    );
     assert_eq!(hash1, hash2);
 
     let mut condition3 = condition1.clone();
     condition3.status = "Triggered".to_string();
-    let hash3 = calculate_hash(&condition3).unwrap();
+    let hash3 = calculate_hash(&condition3);
     assert_ne!(hash1, hash3);
 }

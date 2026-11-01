@@ -1,8 +1,8 @@
 {
   "title": "Polymorphic Decision Protocol",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "upload_type": "software",
-  "description": "Polymorphic Decision Protocol repository release 1.3.2, packaging protocol version 1.3.0 with an added foundational research paper and refreshed metadata.",
+  "description": "PDP Local Toolkit 1.4.0 implements a macOS-first loopback workflow for the PDP v1.3.1 normative candidate: encrypted records, evidence lanes, explicitly approved provider role calls, transient approved Brave search, ordered stress testing, human G1/G2/G3 gates, commitment proposals, manual monitoring and settlement, and process audit. It does not execute consequential actions, export records, enforce provider billing caps, or establish empirical validity. Automated model adapters are OpenAI Responses, Anthropic Messages, and local Ollama; other vendor interfaces use manual prompt and transcript import. Google is paused.",
   "creators": [
     {
       "name": "Shallbetter, Zachary",
@@ -24,23 +24,13 @@
   "language": "eng",
   "related_identifiers": [
     {
-      "identifier": "https://github.com/zachshallbetter/polymorphic-decision-protocol/tree/v1.3.2",
-      "relation": "isSupplementTo",
+      "identifier": "10.5281/zenodo.23797875",
+      "relation": "isVersionOf",
       "resource_type": "software"
     },
     {
-      "identifier": "https://github.com/zachshallbetter/polymorphic-decision-protocol/releases/tag/v1.3.2",
-      "relation": "isIdenticalTo",
-      "resource_type": "software"
-    },
-    {
-      "identifier": "10.5281/zenodo.23290487",
-      "relation": "references",
-      "resource_type": "dataset"
-    },
-    {
-      "identifier": "10.5281/zenodo.20989937",
-      "relation": "references",
+      "identifier": "10.5281/zenodo.23798205",
+      "relation": "isNewVersionOf",
       "resource_type": "software"
     }
   ]

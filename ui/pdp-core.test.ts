@@ -58,6 +58,14 @@ test('ACS unanimous cross-vendor same evidence class', () => {
   assert.strictEqual(result.agreeing_agents.length, 3);
 });
 
+test('ACS exact pick tie chooses lexicographically smallest pick', () => {
+  const result = acs([
+    { agent_id: 'a', vendor: 'Anthropic', evidence_class: 'Quant', pick: 'B', stated_p: 0.5, alternatives: [], load_bearing_facts: [], searched: '' },
+    { agent_id: 'b', vendor: 'OpenAI', evidence_class: 'Market', pick: 'A', stated_p: 0.5, alternatives: [], load_bearing_facts: [], searched: '' },
+  ]);
+  assert.deepStrictEqual(result.agreeing_agents, ['b']);
+});
+
 test('ACS unanimous cross-vendor cross evidence class', () => {
   const agents: AgentVerdict[] = [
     {
@@ -306,6 +314,7 @@ test('SHA-256 deterministic content hashing', async () => {
   const hash1 = await calculateHash(condition1);
   const hash2 = await calculateHash({ ...condition1 });
   assert.strictEqual(hash1, hash2);
+  assert.strictEqual(hash1, '3d279c7d0aa1562a909480250a160abc1d60a4155f635ff0804d5618da5786be');
 
   const hash3 = await calculateHash({ ...condition1, status: "Triggered" });
   assert.notStrictEqual(hash1, hash3);

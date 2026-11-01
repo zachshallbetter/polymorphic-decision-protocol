@@ -1,0 +1,30 @@
+path,source,description,type,license
+README.md,release-artifacts/software-readme.md,Curated software package orientation,documentation,MIT
+CHANGELOG.md,CHANGELOG.md,Software and protocol changes,documentation,MIT
+LICENSE,LICENSE,Software license,legal,MIT
+CITATION.cff,CITATION.cff,Software citation metadata,metadata,MIT
+.zenodo.json,.zenodo.json,Zenodo metadata for the software release,metadata,MIT
+.gitignore,.gitignore,Build and local-file exclusions,metadata,MIT
+VERSION,VERSION,Normative protocol version,metadata,MIT
+Cargo.toml,Cargo.toml,Rust workspace manifest,software,MIT
+Cargo.lock,Cargo.lock,Rust dependency lock,software,MIT
+package.json,package.json,Node package manifest and test commands,software,MIT
+package-lock.json,package-lock.json,Node dependency lock,software,MIT
+crates/pdp-core/Cargo.toml,crates/pdp-core/Cargo.toml,Rust core crate manifest,software,MIT
+crates/pdp-core/src/lib.rs,crates/pdp-core/src/lib.rs,Protocol records and shared types,software,MIT
+crates/pdp-core/src/math.rs,crates/pdp-core/src/math.rs,Mathematical routines,software,MIT
+crates/pdp-core/src/cents.rs,crates/pdp-core/src/cents.rs,Fixed-point currency routines,software,MIT
+crates/pdp-core/src/workflow.rs,crates/pdp-core/src/workflow.rs,Typed workflow records and validation,software,MIT
+crates/pdp-core/src/bin/pdp-cli.rs,crates/pdp-core/src/bin/pdp-cli.rs,Command-line interface source,software,MIT
+crates/pdp-core/tests/math_tests.rs,crates/pdp-core/tests/math_tests.rs,Mathematical routine tests,software,MIT
+crates/pdp-local/Cargo.toml,crates/pdp-local/Cargo.toml,Local service crate manifest,software,MIT
+crates/pdp-local/src/main.rs,crates/pdp-local/src/main.rs,Loopback service and workflow API,software,MIT
+ui/local-app.html,ui/local-app.html,Local application interface,software,MIT
+ui/local-app.js,ui/local-app.js,Local application workflow,software,MIT
+ui/pdp-core.ts,ui/pdp-core.ts,Typed client-side mathematical routines,software,MIT
+ui/pdp-core.test.ts,ui/pdp-core.test.ts,TypeScript tests,software,MIT
+docs/local-toolkit.md,docs/local-toolkit.md,Setup and implemented workflow documentation,documentation,MIT
+docs/pdp-schema.sql,docs/pdp-schema.sql,Proposed schema; not evidence of deployed permissions,documentation,MIT
+docs/pdp-test-002-preregistration.md,docs/pdp-test-002-preregistration.md,Unexecuted research plan; not a study result,documentation,MIT
+archive/release-notes.md,release-artifacts/software-release-notes.md,Curated release notes,documentation,MIT
+metadata/manifest.csv,release-artifacts/manifests/software-v1.4.0.csv,Curated software package manifest,metadata,MIT

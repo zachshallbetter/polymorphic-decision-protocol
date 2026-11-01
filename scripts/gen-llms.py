@@ -29,7 +29,7 @@ INCLUDE_DIRS = [
 ]
 
 ROOT_DOCS = [
-    "README.md", "AGENTS.md", ".agents/AGENTS.md"
+    "README.md", "AGENTS.md", ".agents/AGENTS.md", "docs/local-toolkit.md"
 ]
 
 EXCLUDE: dict[str, str] = {}
