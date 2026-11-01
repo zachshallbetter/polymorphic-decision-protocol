@@ -1,0 +1,9 @@
+{
+  "program": "Polymorphic Decision Protocol",
+  "profile": "project",
+  "protocol": "rdp:protocol/research-discipline@0.1.0",
+  "canon_commit": "35d945a04e622a560c8e1be53ffc0a796be1aa79",
+  "originating_case": "Author-reported 2026 World Cup decision; source records are private and unavailable for independent inspection.",
+  "author_bias": "Zachary Shallbetter originated the protocol, adapted the originating case, implemented some software components, and is the sole author. He is not independent of the design or its assessment. Private case records are not supplied for independent grading.",
+  "waivers": []
+}

@@ -1,0 +1,5 @@
+PDP Local Toolkit 1.4.1 is a maintenance release with no runtime or normative protocol changes. The software archive is MIT-licensed and built from its versioned manifest.
+
+This release also includes **Polymorphic Decision Protocol: A Normative Procedure for High-Uncertainty Decisions with AI Panels**, paper version 1.0.0, as a separate CC BY 4.0 preprint and research-record archive, with a standalone searchable PDF. This is a **pre-review preprint**. It has not received independent review or peer review. Author verification of claims, mathematics, implementation-status descriptions, and citations remains outstanding; author CRediT, funding, and additional competing-interest declarations are incomplete. No efficacy results are reported. The private originating-case records and transcripts are excluded. Test 002 remains unexecuted. No paper DOI has been assigned, and no Zenodo deposit is made by this release.
+
+The paper release does not establish scientific validity, empirical effectiveness, or endorsement of the protocol. See the package README, limitations, research records, and decision log for scope and outstanding work.

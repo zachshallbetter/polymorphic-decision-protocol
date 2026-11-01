@@ -1,0 +1,3 @@
+# Publication record
+
+Public pre-review preprint released through [GitHub release v1.4.1](https://github.com/zachshallbetter/polymorphic-decision-protocol/releases/tag/v1.4.1) on 2026-11-01. No Zenodo deposit has occurred; no paper version DOI or concept DOI is assigned. After an authorized human deposit, record the actual DOI, deposited file list, displayed metadata, access/license, retrieval date, and any discrepancy here. The software concept DOI referenced in `.zenodo.json` identifies the related PDP software record, not this manuscript. The preprint has not received independent review or peer review.

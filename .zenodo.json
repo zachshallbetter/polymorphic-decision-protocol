@@ -1,8 +1,8 @@
 {
   "title": "Polymorphic Decision Protocol",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "upload_type": "software",
-  "description": "PDP Local Toolkit 1.4.0 implements a macOS-first loopback workflow for the PDP v1.3.1 normative candidate: encrypted records, evidence lanes, explicitly approved provider role calls, transient approved Brave search, ordered stress testing, human G1/G2/G3 gates, commitment proposals, manual monitoring and settlement, and process audit. It does not execute consequential actions, export records, enforce provider billing caps, or establish empirical validity. Automated model adapters are OpenAI Responses, Anthropic Messages, and local Ollama; other vendor interfaces use manual prompt and transcript import. Google is paused.",
+  "description": "PDP Local Toolkit 1.4.1 is a maintenance release of the macOS-first loopback workflow for the PDP v1.3.1 normative candidate. Runtime behavior is unchanged from 1.4.0. The release archive is built from a versioned file manifest and includes checksums. The toolkit supports encrypted records, evidence lanes, explicitly approved provider role calls, transient approved Brave search, ordered stress testing, human G1/G2/G3 gates, commitment proposals, manual monitoring and settlement, and process audit. It does not execute consequential actions, export records, enforce provider billing caps, or establish empirical validity. Automated model adapters are OpenAI Responses, Anthropic Messages, and local Ollama; other vendor interfaces use manual prompt and transcript import. Google is paused.",
   "creators": [
     {
       "name": "Shallbetter, Zachary",

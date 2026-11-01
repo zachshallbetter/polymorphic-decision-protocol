@@ -28,8 +28,16 @@ Thumbs.db
 /publication-package/
 /release-artifacts/*
 !/release-artifacts/prepare-packages.py
+!/release-artifacts/build-software-release.py
+!/release-artifacts/build-paper-release.py
+!/release-artifacts/package_archive.py
 !/release-artifacts/manifests/
 release-artifacts/manifests/*
 !/release-artifacts/manifests/software-v1.4.0.csv
+!/release-artifacts/manifests/software-v1.4.1.csv
 !/release-artifacts/software-readme.md
 !/release-artifacts/software-release-notes.md
+!/release-artifacts/README.md
+!/release-artifacts/github-release-v1.4.1.md
+!/release-artifacts/paper-v1.0.0/
+!/release-artifacts/paper-v1.0.0/**

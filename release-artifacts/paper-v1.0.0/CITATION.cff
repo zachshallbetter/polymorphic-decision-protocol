@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "Cite this pre-review preprint by its GitHub release URL; no DOI is assigned."
+title: "Polymorphic Decision Protocol: A Normative Procedure for High-Uncertainty Decisions with AI Panels"
+type: article
+authors:
+  - family-names: Shallbetter
+    given-names: Zachary
+    orcid: "https://orcid.org/0009-0009-9450-3429"
+    affiliation: "Independent Researcher"
+version: "1.0.0"
+date-released: 2026-11-01
+license: "CC-BY-4.0"
+abstract: >-
+  A critical Type II analysis of the normative PDP v1.3.0 protocol, its
+  assumptions, implementation boundary, and testable limits. No efficacy
+  results are reported. This public pre-review preprint has not received
+  independent review or peer review; no DOI is assigned.
+url: "https://github.com/zachshallbetter/polymorphic-decision-protocol/releases/tag/v1.4.1"
+keywords:
+  - decision protocols
+  - language models
+  - forecast combination
+  - calibration
+  - human oversight
+  - research methods

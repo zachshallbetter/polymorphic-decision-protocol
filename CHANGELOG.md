@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1 — 2026-11-01
+
+- Added manifest-validated GitHub release packaging that builds and attaches the software ZIP, paper/research package ZIP, standalone paper PDF, and SHA-256 sidecars without replacing mismatched assets.
+- Added archive checks for exact manifest parity, checksums, ZIP integrity, and version agreement across `.zenodo.json`, `CITATION.cff`, and the package README.
+- Added paper version 1.0.0 as a public pre-review preprint. It is not independently reviewed or peer reviewed; no paper DOI or Zenodo deposit is claimed, and author verification and declarations remain incomplete.
+- No runtime or normative protocol changes; protocol baseline remains v1.3.1, and Rust/npm package versions remain 0.2.0.
+
 ## PDP protocol 1.3.1
 
 - Corrected the ACS denominator to the total number of panel agents, including nonmodal agents. This matches the worked example and the reference implementation; the prior displayed sum-of-weights denominator contradicted both.

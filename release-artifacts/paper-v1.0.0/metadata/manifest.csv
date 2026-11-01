@@ -1,0 +1,60 @@
+path,description,type
+.zenodo.json,Package orientation or citation metadata,documentation
+CHANGELOG.md,Package orientation or citation metadata,documentation
+CITATION.cff,Package orientation or citation metadata,documentation
+LICENSE,CC BY 4.0 paper-package license notice,legal
+README.md,Package orientation or citation metadata,documentation
+analysis/README.md,Package orientation or citation metadata,documentation
+archive/checksums.sha256,SHA-256 integrity list,archive
+archive/release-notes.md,Release archive record,archive
+data/README.md,Package orientation or citation metadata,documentation
+docs/data-management-plan.md,Research documentation,documentation
+docs/data/README.md,Research documentation,documentation
+docs/decisions/README.md,Research documentation,documentation
+docs/limitations.md,Research documentation,documentation
+docs/methodology.md,Research documentation,documentation
+docs/research-log.md,Research documentation,documentation
+docs/research-plan.md,Research documentation,documentation
+manuscript/front-matter.yml,Scholarly manuscript source or compiled rendition,manuscript
+manuscript/paper.md,Scholarly manuscript source or compiled rendition,manuscript
+manuscript/pdp-normative-procedure-v1.0.0.md,Scholarly manuscript source or compiled rendition,manuscript
+manuscript/pdp-normative-procedure-v1.0.0.pdf,Scholarly manuscript source or compiled rendition,manuscript
+manuscript/pdp-normative-procedure-v1.0.0.tex,Scholarly manuscript source or compiled rendition,manuscript
+manuscript/references.bib,Scholarly manuscript source or compiled rendition,manuscript
+metadata/manifest.csv,Curated package file manifest,metadata
+publication/deposit-checklist.md,Publication readiness record,publication
+publication/publication-record.md,Publication readiness record,publication
+research/claims.jsonl,RDP Project research record,research-record
+research/discoveries.jsonl,RDP Project research record,research-record
+research/negative-results.jsonl,RDP Project research record,research-record
+research/paper/README.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/assemble-paper.py,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/figures/README.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/latex/pdp-normative-procedure-v1.0.0-references.bib,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/manuscript-front-matter.yml,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/pdp-normative-procedure-v1.0.0.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/pdp-normative-procedure-v1.0.0.pdf,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/pdp-normative-procedure-v1.0.0.tex,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/00-implementation-status-matrix.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/01-abstract.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/02-introduction.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/02-scope-and-exclusions.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/03-related-work.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/04-formal-model.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/04-methods.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/05-experiments.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/06-results.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/07-discussion.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/08-conclusion.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/09-examples.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/10-concept-implementation-audit.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/sections/README.md,Scholarly manuscript source or compiled rendition,manuscript
+research/paper/supplementary/README.md,Scholarly manuscript source or compiled rendition,manuscript
+research/predictions.jsonl,RDP Project research record,research-record
+research/prior-art.md,RDP Project research record,research-record
+research/profile.json,RDP Project research record,research-record
+research/refinements.jsonl,RDP Project research record,research-record
+research/stress-register.md,RDP Project research record,research-record
+results/README.md,Package orientation or citation metadata,documentation
+sources/README.md,Bibliographic source record,source-register
+sources/source-register.csv,Bibliographic source record,source-register

@@ -1,0 +1,6 @@
+key,author,year,title,source,identifier,verification_status,notes
+brier1950,Brier,1950,Verification of forecasts expressed in terms of probability,Monthly Weather Review,10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2,verified,Publisher record checked
+batesgranger1969,Bates and Granger,1969,The combination of forecasts,Operational Research Quarterly,10.1057/jors.1969.103,verified,Publisher record confirms authors title journal volume issue pages and DOI
+smit2024,Smit et al.,2024,Should we be going MAD? A Look at Multi-Agent Debate Strategies for LLMs,Proceedings of Machine Learning Research 235,https://proceedings.mlr.press/v235/smit24a.html,verified,Proceedings record
+sharma2023,Sharma et al.,2023,Towards Understanding Sycophancy in Language Models,arXiv,arXiv:2310.13548,verified,Preprint record; peer-review status must not be implied
+pdpv130,Shallbetter,2026,Polymorphic Decision Protocol,Zenodo,10.5281/zenodo.23798205,verified,Repository release 1.3.2 contains normative protocol version 1.3.0; normative candidate

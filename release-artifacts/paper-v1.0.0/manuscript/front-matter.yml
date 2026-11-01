@@ -1,0 +1,20 @@
+title: "Polymorphic Decision Protocol: A Normative Procedure for High-Uncertainty Decisions with AI Panels"
+author: "Zachary Shallbetter"
+date: "2026-11-01"
+version: "1.0.0"
+scope: "Critical analysis of the normative PDP v1.3.0 procedure and its testable limits; no empirical efficacy claim."
+license: "CC-BY-4.0"
+doi: "Not assigned"
+lang: en
+abstract: >-
+  This Type II protocol paper analyzes the normative design, assumptions,
+  implementation boundary, and falsifiability of PDP v1.3.0. It reports no
+  efficacy result. A private author-reported case is included only as
+  development context and is not independently verified. Test 002 is unexecuted.
+keywords:
+  - decision protocols
+  - language models
+  - forecast combination
+  - calibration
+  - human oversight
+  - research methods

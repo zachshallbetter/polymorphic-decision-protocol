@@ -1,5 +1,5 @@
 # Polymorphic Decision Protocol (PDP)
-> Version: v1.4.0 | Total Included Documents: 13
+> Version: v1.4.1 | Total Included Documents: 13
 
 > A procedure for making high-uncertainty decisions with panels of AI systems, where
 > consensus is discounted by input provenance, model confidence is tested under controlled
@@ -9,7 +9,7 @@ The systems supply evidence and argument. The human owns the weights, the stakes
 Everything in this package is enforcement of that boundary.
 
 - [llms-full.txt](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/llms-full.txt): the complete PDP corpus concatenated into one file
-- [llms-full-pdp-v1.4.0.txt](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/llms-full-pdp-v1.4.0.txt): versioned corpus payload
+- [llms-full-pdp-v1.4.1.txt](https://github.com/zachshallbetter/polymorphic-decision-protocol/blob/main/llms-full-pdp-v1.4.1.txt): versioned corpus payload
 
 ## Docs
 

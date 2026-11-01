@@ -1,0 +1,32 @@
+{
+  "title": "Polymorphic Decision Protocol: A Normative Procedure for High-Uncertainty Decisions with AI Panels",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "version": "1.0.0",
+  "description": "Public pre-review preprint, paper version 1.0.0, released 2026-11-01 through GitHub release v1.4.1. This Type II protocol analysis examines PDP v1.3.0 and reports no efficacy study. It has not received independent review or peer review, author verification and declaration confirmation remain incomplete, and no paper DOI is assigned. The author-reported development case is illustrative only; private records are not included. This metadata is prepared for a possible future archival deposit; no Zenodo deposit has occurred.",
+  "creators": [
+    {
+      "name": "Shallbetter, Zachary",
+      "orcid": "0009-0009-9450-3429",
+      "affiliation": "Independent Researcher"
+    }
+  ],
+  "keywords": [
+    "decision protocols",
+    "language models",
+    "forecast combination",
+    "calibration",
+    "human oversight",
+    "research methods"
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "language": "eng",
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.23797875",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}

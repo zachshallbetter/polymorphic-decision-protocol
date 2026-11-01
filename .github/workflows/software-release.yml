@@ -1,0 +1,107 @@
+name: Curated software and preprint release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: software-release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the trusted release builder
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Export the tagged source tree
+        id: source
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "Release tag must use stable semantic version vMAJOR.MINOR.PATCH." >&2
+            exit 1
+          fi
+          git fetch --no-tags --depth=1 "https://github.com/${REPOSITORY}.git" "refs/tags/${TAG}:refs/tags/${TAG}"
+          SOURCE_DIR="$RUNNER_TEMP/pdp-release-source"
+          mkdir -p "$SOURCE_DIR"
+          git archive --format=tar "refs/tags/${TAG}" | tar -xf - -C "$SOURCE_DIR"
+          echo "source_dir=$SOURCE_DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Build the versioned software package
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          SOURCE_DIR: ${{ steps.source.outputs.source_dir }}
+        run: |
+          set -euo pipefail
+          python3 release-artifacts/build-software-release.py "$TAG" \
+            --source-dir "$SOURCE_DIR" \
+            --output-dir "$RUNNER_TEMP/pdp-release-output"
+
+      - name: Build the versioned preprint package and PDF
+        env:
+          SOURCE_DIR: ${{ steps.source.outputs.source_dir }}
+        run: |
+          set -euo pipefail
+          python3 release-artifacts/build-paper-release.py \
+            --source-dir "$SOURCE_DIR" \
+            --output-dir "$RUNNER_TEMP/pdp-release-output"
+
+      - name: Attach the curated archive without replacing published assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+          REPOSITORY: ${{ github.repository }}
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: |
+          set -euo pipefail
+          VERSION="${TAG#v}"
+          MANAGED_ASSETS=(
+            "PDP-software-v${VERSION}.zip"
+            "PDP-software-v${VERSION}.zip.sha256"
+            "PDP-paper-v1.0.0.zip"
+            "PDP-paper-v1.0.0.zip.sha256"
+            "PDP-paper-v1.0.0.pdf"
+            "PDP-paper-v1.0.0.pdf.sha256"
+          )
+          OUTPUT_DIR="$RUNNER_TEMP/pdp-release-output"
+          ASSETS="$(gh release view "$TAG" --repo "$REPOSITORY" --json assets --jq '.assets[].name')"
+          FOUND=0
+          for expected in "${MANAGED_ASSETS[@]}"; do
+            while IFS= read -r asset; do
+              [[ "$asset" == "$expected" ]] && ((FOUND+=1))
+            done <<< "$ASSETS"
+          done
+
+          if [[ "$FOUND" -eq "${#MANAGED_ASSETS[@]}" ]]; then
+            EXISTING="$RUNNER_TEMP/pdp-release-existing"
+            mkdir -p "$EXISTING"
+            for expected in "${MANAGED_ASSETS[@]}"; do
+              gh release download "$TAG" --repo "$REPOSITORY" --pattern "$expected" --dir "$EXISTING"
+              cmp "$OUTPUT_DIR/$expected" "$EXISTING/$expected"
+            done
+            echo "Matching curated assets are already attached; no replacement made."
+          elif [[ "$FOUND" -ne 0 ]]; then
+            echo "Release has a partial set of managed assets; refusing to replace or complete it silently." >&2
+            exit 1
+          else
+            gh release upload "$TAG" \
+              "$OUTPUT_DIR/PDP-software-v${VERSION}.zip" \
+              "$OUTPUT_DIR/PDP-software-v${VERSION}.zip.sha256" \
+              "$OUTPUT_DIR/PDP-paper-v1.0.0.zip" \
+              "$OUTPUT_DIR/PDP-paper-v1.0.0.zip.sha256" \
+              "$OUTPUT_DIR/PDP-paper-v1.0.0.pdf" \
+              "$OUTPUT_DIR/PDP-paper-v1.0.0.pdf.sha256" \
+              --repo "$REPOSITORY"
+          fi
