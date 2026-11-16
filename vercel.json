@@ -2,5 +2,11 @@
   "version": 2,
   "cleanUrls": true,
   "buildCommand": "mkdir -p dist && npx esbuild ui/pdp-core.ts --bundle --format=esm --outfile=dist/pdp-core.js && cp ui/index.html dist/index.html",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "main": true
+    }
+  }
 }
