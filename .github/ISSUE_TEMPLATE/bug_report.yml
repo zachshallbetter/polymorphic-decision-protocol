@@ -1,0 +1,54 @@
+name: Bug report
+description: The protocol text, the local toolkit, or the release packaging is not behaving as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report. Steps to reproduce are the fastest path to a fix. Report security issues privately, not here.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Repository release, protocol version and package version, or the commit if you built from source.
+      placeholder: Release 1.4.1, protocol 1.3.1, package 0.2.0
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Protocol specification
+        - pdp-core (Rust)
+        - pdp-local (macOS loopback service)
+        - Browser interface (ui/)
+        - Release packaging
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: What should have happened. Quote the specification or docs section if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Steps, the command you ran, or a minimal example. Do not paste API keys or private decision records.
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: macOS version, browser, Rust version, Node version
