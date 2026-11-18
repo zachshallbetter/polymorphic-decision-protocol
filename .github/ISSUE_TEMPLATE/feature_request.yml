@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a change to the protocol, the toolkit, or the documentation.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        The protocol assigns evidence and argument to systems and reserves weights, stakes and exit
+        authority to the human. Say which part of the protocol or toolkit your idea touches and how
+        it keeps that boundary.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The behavior you want
+      description: What should the protocol or toolkit do? What is the use case?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How you imagine it
+      description: A specification change, a toolkit option, a schema change, a document.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

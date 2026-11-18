@@ -187,6 +187,17 @@ The protocol assigns evidence and argument to systems and reserves weights, stak
 
 Read the normative specification in the repository source, then the architecture and schema as proposals. Read Test 002 as an unexecuted research plan. The curated software package does not include case narratives or research papers.
 
+## How to verify
+
+The checks below cover the implemented code only. They are unit and syntax checks, not empirical evaluation of the protocol.
+
+```sh
+npm test          # runs the three checks below
+npm run test:rust # cargo test (pdp-core, pdp-local)
+npm run test:ts   # ui/pdp-core.test.ts under node --experimental-strip-types
+npm run test:ui   # node --check ui/local-app.js
+```
+
 ## Status and honest limits
 
 - The originating case is an author-reported illustration with private source records unavailable for independent inspection. No empirical claim about efficacy, sycophancy prevalence, or generality is made from it.
