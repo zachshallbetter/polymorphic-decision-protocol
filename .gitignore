@@ -31,6 +31,7 @@ Thumbs.db
 !/release-artifacts/build-software-release.py
 !/release-artifacts/build-paper-release.py
 !/release-artifacts/package_archive.py
+!/release-artifacts/version_metadata.py
 !/release-artifacts/manifests/
 release-artifacts/manifests/*
 !/release-artifacts/manifests/software-v1.4.0.csv

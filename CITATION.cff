@@ -1,11 +1,6 @@
 cff-version: 1.2.0
-message: "If you use this protocol, please cite it as below."
+message: "If you use the PDP Local Toolkit, please cite this repository release."
 title: "Polymorphic Decision Protocol"
-abstract: >-
-  A procedure for making high-uncertainty decisions with panels of AI systems,
-  where consensus is discounted by input provenance, model confidence is tested
-  under controlled pressure, and the human owns the weights, the stakes, and the
-  exit.
 type: software
 authors:
   - family-names: Shallbetter
