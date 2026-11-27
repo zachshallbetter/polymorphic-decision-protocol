@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Corrected `VERSION` to `1.3.1`, the normative protocol version, and added automated checks for protocol, repository release, and software package version consistency.
+
 ## 1.4.1 — 2026-11-01
 
 - Added manifest-validated GitHub release packaging that builds and attaches the software ZIP, paper/research package ZIP, standalone paper PDF, and SHA-256 sidecars without replacing mismatched assets.

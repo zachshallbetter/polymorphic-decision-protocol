@@ -35,18 +35,34 @@ jobs:
             exit 1
           fi
           git fetch --no-tags --depth=1 "https://github.com/${REPOSITORY}.git" "refs/tags/${TAG}:refs/tags/${TAG}"
+          TAG_REF="refs/tags/${TAG}"
+          EXPECTED_TREE=""
+          case "$TAG" in
+            v1.4.0) EXPECTED_TREE=a7b85f0570fc95a2ec08d78b1605da717abd55ef ;;
+            v1.4.1) EXPECTED_TREE=58f0b4992f6440f9c0401fb2c958e253326c8133 ;;
+          esac
+          if [[ -n "$EXPECTED_TREE" && "$(git rev-parse "${TAG_REF}^{tree}")" != "$EXPECTED_TREE" ]]; then
+            echo "Historical tag does not resolve to its original source tree." >&2
+            exit 1
+          fi
+          echo "legacy_tree=$EXPECTED_TREE" >> "$GITHUB_OUTPUT"
           SOURCE_DIR="$RUNNER_TEMP/pdp-release-source"
           mkdir -p "$SOURCE_DIR"
-          git archive --format=tar "refs/tags/${TAG}" | tar -xf - -C "$SOURCE_DIR"
+          git archive --format=tar "$TAG_REF" | tar -xf - -C "$SOURCE_DIR"
           echo "source_dir=$SOURCE_DIR" >> "$GITHUB_OUTPUT"
 
       - name: Build the versioned software package
         env:
           TAG: ${{ github.event.release.tag_name }}
           SOURCE_DIR: ${{ steps.source.outputs.source_dir }}
+          LEGACY_TREE: ${{ steps.source.outputs.legacy_tree }}
         run: |
           set -euo pipefail
-          python3 release-artifacts/build-software-release.py "$TAG" \
+          LEGACY_ARGS=()
+          if [[ -n "$LEGACY_TREE" ]]; then
+            LEGACY_ARGS+=(--legacy-version-metadata)
+          fi
+          python3 release-artifacts/build-software-release.py "$TAG" "${LEGACY_ARGS[@]}" \
             --source-dir "$SOURCE_DIR" \
             --output-dir "$RUNNER_TEMP/pdp-release-output"
 

@@ -12,12 +12,45 @@ import tempfile
 from pathlib import Path, PurePosixPath
 
 from package_archive import build_zip, sha256_file
+from version_metadata import (
+    ARCHIVE_README,
+    CRATES,
+    STABLE_VERSION,
+    require_version,
+    validate_archive_versions,
+    validate_checkout,
+)
 
 REPOSITORY = Path(__file__).resolve().parents[1]
-VERSION_PATTERN = re.compile(r"^v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 GENERATED_PATHS = {"metadata/manifest.csv", "archive/checksums.sha256"}
 MANIFEST_FIELDS = ("path", "source", "description", "type", "license")
 CHECKSUM_DESCRIPTION = "SHA-256 inventory of all package payload files"
+VERSION_DESCRIPTION = "Normative protocol version"
+LEGACY_RELEASES = {"1.4.0", "1.4.1"}
+VERSIONED_PAYLOAD_PATHS = {
+    "VERSION",
+    ".zenodo.json",
+    "CITATION.cff",
+    "package.json",
+    "package-lock.json",
+    "Cargo.lock",
+    *(f"crates/{crate}/Cargo.toml" for crate in CRATES),
+}
+
+
+def verify_version_mappings(rows: list[dict[str, str]]) -> None:
+    manifest = {row["path"]: row for row in rows}
+    expected = {path: path for path in VERSIONED_PAYLOAD_PATHS}
+    expected["README.md"] = ARCHIVE_README
+    for path, source in expected.items():
+        if path not in manifest or manifest[path]["source"] != source:
+            raise ValueError(f"software manifest must map {path} to {source}")
+    version_row = manifest["VERSION"]
+    if (version_row["description"], version_row["type"], version_row["license"]) != (
+        VERSION_DESCRIPTION, "metadata", "MIT",
+    ):
+        raise ValueError(f"software manifest must include VERSION,VERSION,{VERSION_DESCRIPTION},metadata,MIT")
+
 
 
 def safe_path(value: str) -> PurePosixPath:
@@ -127,7 +160,9 @@ def write_checksums(package_root: Path) -> None:
             stream.write(f"{sha256_file(path)}  {relative}\n")
 
 
-def verify_package(package_root: Path, version: str) -> set[str]:
+def verify_package(
+    package_root: Path, version: str, versions: tuple[str, str, str] | None
+) -> set[str]:
     files = {path.relative_to(package_root).as_posix() for path in package_root.rglob("*") if path.is_file()}
     with (package_root / "metadata" / "manifest.csv").open(encoding="utf-8", newline="") as stream:
         listed = {row["path"] for row in csv.DictReader(stream)}
@@ -148,6 +183,16 @@ def verify_package(package_root: Path, version: str) -> set[str]:
         raise ValueError("package checksum inventory does not exactly match package contents")
 
     metadata = json.loads((package_root / ".zenodo.json").read_text(encoding="utf-8"))
+    if metadata.get("title") != "Polymorphic Decision Protocol":
+        raise ValueError(".zenodo.json title does not match the package title")
+    if versions is None:
+        verify_legacy_versions(package_root, version, metadata)
+    else:
+        validate_archive_versions(package_root, versions)
+    return files
+
+
+def verify_legacy_versions(package_root: Path, version: str, metadata: dict) -> None:
     if metadata.get("version") != version:
         raise ValueError(".zenodo.json version does not match the release tag")
     citation = (package_root / "CITATION.cff").read_text(encoding="utf-8")
@@ -156,18 +201,23 @@ def verify_package(package_root: Path, version: str) -> set[str]:
     readme = (package_root / "README.md").read_text(encoding="utf-8")
     if re.search(rf"(?m)^- \*\*Package:\*\* PDP Local Toolkit {re.escape(version)}$", readme) is None:
         raise ValueError("software README package version does not match the release tag")
-    if metadata.get("title") != "Polymorphic Decision Protocol":
-        raise ValueError(".zenodo.json title does not match the package title")
-    return files
 
 
-def build(tag: str, source_root: Path, output_dir: Path) -> tuple[Path, Path]:
-    match = VERSION_PATTERN.fullmatch(tag)
-    if match is None:
+def build(
+    tag: str, source_root: Path, output_dir: Path, *, legacy_version_metadata: bool = False
+) -> tuple[Path, Path]:
+    version = tag.removeprefix("v")
+    if re.fullmatch(STABLE_VERSION, version) is None:
         raise ValueError("release tag must be vMAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH")
-    version = ".".join(match.groups())
+    if legacy_version_metadata and version not in LEGACY_RELEASES:
+        raise ValueError("legacy version metadata is supported only for v1.4.0 and v1.4.1")
     source_root = source_root.resolve(strict=True)
+    versions = None if legacy_version_metadata else validate_checkout(source_root)
+    if versions is not None:
+        require_version(".zenodo.json (version)", versions[1], "release tag", version)
     rows, manifest_entry = read_manifest(source_root, version)
+    if versions is not None:
+        verify_version_mappings(rows)
 
     prefix = f"PDP-software-v{version}"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -183,7 +233,7 @@ def build(tag: str, source_root: Path, output_dir: Path) -> tuple[Path, Path]:
 
         write_package_manifest(package_root, rows, manifest_entry)
         write_checksums(package_root)
-        expected = verify_package(package_root, version)
+        expected = verify_package(package_root, version, versions)
         return build_zip(package_root, prefix, output_dir, expected)
 
 
@@ -192,8 +242,19 @@ def main() -> None:
     parser.add_argument("tag", help="GitHub release tag, for example v1.4.0")
     parser.add_argument("--source-dir", type=Path, default=REPOSITORY, help="extracted source tree for the release tag")
     parser.add_argument("--output-dir", type=Path, required=True, help="directory for the ZIP and its SHA-256 file")
+    parser.add_argument(
+        "--legacy-version-metadata",
+        action="store_true",
+        help="replay the original v1.4.0 or v1.4.1 source tree with historical metadata validation",
+    )
     args = parser.parse_args()
-    zip_path, checksum_path = build(args.tag, args.source_dir, args.output_dir)
+    try:
+        zip_path, checksum_path = build(
+            args.tag, args.source_dir, args.output_dir,
+            legacy_version_metadata=args.legacy_version_metadata,
+        )
+    except (OSError, ValueError) as error:
+        parser.exit(1, f"Software release build failed: {error}\n")
     print(f"{zip_path} ({zip_path.stat().st_size} bytes)")
     print(checksum_path.read_text(encoding="utf-8"), end="")
 
