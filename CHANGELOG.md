@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `VERSION` holds the normative protocol version, `1.3.1`, as the release manifests describe it. It said `1.4.0`, which is neither the protocol version nor the current repository release (`1.4.1`). No protocol, runtime or package change.
+
 ## 1.4.1 — 2026-11-01
 
 - Added manifest-validated GitHub release packaging that builds and attaches the software ZIP, paper/research package ZIP, standalone paper PDF, and SHA-256 sidecars without replacing mismatched assets.
